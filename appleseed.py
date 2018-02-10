@@ -3,10 +3,10 @@
 import sys
 import os
 from contextlib import contextmanager
-from itertools import zip_longest
+from itertools import zip_longest, islice
 
 
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 WHITESPACE = " \t\n\r"
 SYMBOLS = "()"
@@ -126,11 +126,109 @@ The resulting parse tree is an Appleseed list (i.e. nested tuples).
         return (element, parse(code))
 
 
+# Exception that is raised by the (quit) macro
+
+class UserQuit(BaseException):
+    pass
+
+
+class Thunk:
+    """For delayed evaluation of function calls."""
+    def __init__(self, environment, param_names, body, arglist):
+        self.environment = environment
+        self.param_names = param_names
+        self.body = body
+        self.arglist = arglist
+        self.resolved = None
+
+    def __eq__(self, value):
+        return (isinstance(value, Thunk)
+                and self.environment == value.environment
+                and self.param_names == value.param_names
+                and self.body == value.body
+                and self.arglist == value.arglist)
+
+    def __str__(self):
+        return "Thunk(%s, %s, %s)" % (self.body, self.param_names,
+                                      self.arglist)
+
+    def __repr__(self):
+        return str(self)
+    
+    def resolve(self):
+        """Perform a tail-recursive function call.
+
+Tail-recursion can include if, eval, macros, and cons. If the result
+after eliminating if, eval, and macros is another thunk, the caller
+is expected to resolve it (so that resolution uses a loop, not
+recursion). If there are non-tail-recursive nested calls, they are
+fully resolved.
+"""
+        if self.resolved is not None:
+            return self.resolved
+        body = self.body
+        with self.environment.new_scope() as local_names:
+            # Bind arg values to param names in the new local scope
+            try:
+                self.environment.bind_params(self.param_names,
+                                             self.arglist,
+                                             local_names)
+            except TypeError:
+                # There was a problem with binding the paramters
+                # (bind_params already gave the error message)
+                return nil
+            # Eliminate any macros, ifs, and evals
+            head = None
+            tail = None
+            if body and isinstance(body, tuple):
+                head = self.environment.asl_eval(body[0])
+                tail = body[1]
+                try:
+                    head, tail = self.environment.resolve_macros(head, tail)
+                except TypeError:
+                    # resolve_macros encountered an error condition
+                    # (it already gave the error message)
+                    return nil
+                if head is None:
+                    # After resolving macros, the result was a
+                    # simple value, not an s-expression
+                    body = tail
+            # Are we left with a tail call to a user-defined
+            # function (either the same one or a different one)?
+            if head and isinstance(head, tuple):
+                # If so, calculate updated param names, function body,
+                # and arglist, and return a new Thunk (to be resolved
+                # in the calling context)
+                function = head
+                raw_args = tail
+                try:
+                    call_data = self.environment.call_data(function, raw_args)
+                except TypeError:
+                    # There was a problem with the structure of the
+                    # supposed function (call_data already gave the
+                    # error message)
+                    return nil
+                else:
+                    return_val = Thunk(self.environment, *call_data)
+            else:
+                # Otherwise, just eval the final expression
+                return_val = self.environment.asl_eval(body)
+        self.resolved = return_val
+        return return_val
+
+
+def resolve_thunks(value):
+    while isinstance(value, Thunk):
+        value = value.resolve()
+    return value
+
+
 def cons_iter(nested_tuple):
     """Iterate over a cons chain of nested tuples."""
+    nested_tuple = resolve_thunks(nested_tuple)
     while nested_tuple:
         yield nested_tuple[0]
-        nested_tuple = nested_tuple[1]
+        nested_tuple = resolve_thunks(nested_tuple[1])
 
 
 # Appleseed built-in functions and macros
@@ -178,11 +276,13 @@ top_level_only_fns = ["asl_load", "asl_help", "asl_restart", "asl_quit"]
 
 def macro(pyfunc):
     pyfunc.is_macro = True
+    pyfunc.name = pyfunc.__name__
     return pyfunc
 
 
 def function(pyfunc):
     pyfunc.is_macro = False
+    pyfunc.name = pyfunc.__name__
     return pyfunc
 
 
@@ -193,15 +293,21 @@ def params(param_count):
     return params_decorator
 
 
-# Exception that is raised by the (quit) macro
-
-class UserQuit(BaseException):
-    pass
+def no_thunks(pyfunc):
+    def resolve_thunks_and_call(*args, **kwargs):
+        resolved_args = []
+        for value in args:
+            value = resolve_thunks(value)
+            resolved_args.append(value)
+        return pyfunc(*resolved_args, **kwargs)
+    resolve_thunks_and_call.__name__ = pyfunc.__name__
+    return resolve_thunks_and_call
 
 
 class Program:
-    def __init__(self, repl=False):
+    def __init__(self, repl=False, max_list_items=None):
         self.repl = repl
+        self.max_list_items = max_list_items
         self.modules = []
         self.module_paths = [os.path.abspath(os.path.dirname(__file__))]
         self.names = [{}]
@@ -244,7 +350,7 @@ class Program:
             if expr and isinstance(expr, tuple) and isinstance(expr[0], str):
                 outer_function = self.asl_eval(expr[0])
                 if outer_function in self.builtins:
-                    outer_function = outer_function.__name__
+                    outer_function = outer_function.name
             result = self.asl_eval(expr, top_level=True)
             # If outer function is in the top_level_quiet_fns list,
             # suppress output--but always show output when running in
@@ -258,22 +364,23 @@ class Program:
         """Returns parameter names, body, and list of eval'd args."""
         # Function should be a nested-tuple structure containing
         # parameter names and function body
-        if function and function[1]:
-            if not function[1][1]:
-                param_names = function[0]
-                body = function[1][0]
-                # Function arguments are evaluated
-                arglist = [self.asl_eval(arg) for arg in cons_iter(raw_args)]
-            else:
-                error("list too long to be interpreted as function")
-                raise TypeError
+        function_parts = list(islice(cons_iter(function), 3))
+        if len(function_parts) == 2:
+            param_names, body = function_parts
+            # Function arguments are evaluated
+            arglist = [self.asl_eval(arg) for arg in cons_iter(raw_args)]
+        elif len(function_parts) > 2:
+            error("list callable as function must have 2 elements, not more")
+            raise TypeError
         else:
-            error("list too short to be interpreted as function")
+            error("list callable as function must have 2 elements, not",
+                  len(function_parts))
             raise TypeError
         return param_names, body, arglist
 
     def bind_params(self, param_names, arguments, namespace):
         """Binds arguments to param_names in namespace."""
+        arguments = resolve_thunks(arguments)
         if isinstance(arguments, list):
             # This is a function with a Python list of eval'd arguments
             arg_iter = iter(arguments)
@@ -287,22 +394,27 @@ class Program:
             raise NotImplementedError("arguments should be Python list or "
                                       "nested tuple, not "
                                       + str(type(arguments)))
+        param_names = resolve_thunks(param_names)
         if isinstance(param_names, tuple):
             name_iter = cons_iter(param_names)
             required_param_count = 0
             optional_param_count = 0
             arg_count = 0
             for name, arg in zip_longest(name_iter, arg_iter):
+                name = resolve_thunks(name)
                 if name is None:
                     # Ran out of argument names
                     arg_count += 1
                 elif isinstance(name, tuple):
-                    if (name and isinstance(name[0], str) and name[1]
-                            and not name[1][1]):
-                        # This is an argname + default value pair
-                        default_val = name[1][0]
-                        name = name[0]
-                        if name in self.global_names:
+                    # This is probably an argname + default value pair
+                    default_pair = list(islice(cons_iter(name), 3))
+                    if len(default_pair) == 2:
+                        name, default_val = map(resolve_thunks, default_pair)
+                        if not isinstance(name, str):
+                            error("parameter list must contain names, not",
+                                  self.asl_type(name))
+                            raise TypeError
+                        elif name in self.global_names:
                             warn(procedure_type, "parameter name shadows",
                                  "global name", name)
                         if arg is None:
@@ -316,14 +428,11 @@ class Program:
                     elif name == nil:
                         error("parameter list must contain names, not ()")
                         raise TypeError
-                    elif not isinstance(name[0], str):
-                        error("parameter list must contain names, not",
-                              self.asl_type(name[0]))
+                    elif len(default_pair) == 1:
+                        error("missing default value for",
+                              resolve_thunks(default_pair[0]))
                         raise TypeError
-                    elif not name[1]:
-                        error("missing default value for", name[0])
-                        raise TypeError
-                    elif name[1][1]:
+                    elif len(default_pair) > 2:
                         error("too many elements in parameter default",
                               "value specification list")
                         raise TypeError
@@ -366,81 +475,31 @@ class Program:
             if procedure_type == "function":
                 # Repackage arglist into nested tuples and assign
                 args = nil
-                while arguments:
-                    args = (arguments.pop(), args)
+                for arg in reversed(arguments):
+                    args = (arg, args)
                 namespace[arglist_name] = args
             elif procedure_type == "macro":
                 # Quote arglist and assign
                 namespace[arglist_name] = ("q", (arguments, ()))
             else:
                 # Code should never get here
-                raise NotImplemented("procedure_type should be either "
-                                     "function or macro")
+                raise NotImplementedError("procedure_type should be either "
+                                          "function or macro")
         else:
             error("parameters must either be name or list of names,",
                   "not", self.asl_type(param_names))
             raise TypeError
 
     def call(self, function, raw_args):
-        """Perform a function call with a user-defined function."""
+        """Generate a deferred call of a user-defined function."""
         try:
-            param_names, body, arglist = self.call_data(function, raw_args)
+            call_data = self.call_data(function, raw_args)
         except TypeError:
             # There was a problem with the structure of the supposed
             # function (call_data already gave the error message)
             return nil
-        with self.new_scope():
-            # Loop while recursive calls are optimizable tail-calls
-            while function is not None:
-                # Bind arg values to param names in local scope
-                try:
-                    self.bind_params(param_names, arglist, self.local_names)
-                except TypeError:
-                    # There was a problem with binding the paramters
-                    # (bind_params already gave the error message)
-                    return nil
-                # Eliminate any macros, ifs, and evals
-                head = None
-                tail = None
-                if body and isinstance(body, tuple):
-                    head = self.asl_eval(body[0])
-                    tail = body[1]
-                    try:
-                        head, tail = self.resolve_macros(head, tail)
-                    except TypeError:
-                        # resolve_macros encountered an error condition
-                        # (it already gave the error message)
-                        return nil
-                    if head is None:
-                        # After resolving macros, the result was a
-                        # simple value, not an s-expression
-                        body = tail
-                # Are we left with a tail call to a user-defined
-                # function (either the same one or a different one)?
-                if head and isinstance(head, tuple):
-                    # If so, swap out the args from the original call
-                    # for the updated args, the function for the new
-                    # function (which might be the same function), and
-                    # loop for the recursive call
-                    function = head
-                    raw_args = tail
-                    try:
-                        param_names, body, arglist = self.call_data(function,
-                                                                    raw_args)
-                    except TypeError:
-                        # There was a problem with the structure of the
-                        # supposed function (call_data already gave the
-                        # error message)
-                        return nil
-                    # Clear the local scope to prepare for the next
-                    # iteration
-                    self.local_names.clear()
-                else:
-                    # Otherwise, eval the final expression, break out
-                    # of the loop, and return it
-                    return_val = self.asl_eval(body)
-                    function = None
-        return return_val
+        else:
+            return Thunk(self, *call_data)
 
     def resolve_macros(self, head, raw_args):
         """Given head and tail of an expression, rewrite any macros.
@@ -455,42 +514,42 @@ user-defined macros.
   macro with the arguments unevaluated; then evaluate its return
   value and replace the expression with that.
 """
+        head = resolve_thunks(head)
         is_udef_macro = self.is_macro(head)
         while head == self.asl_if or head == self.asl_eval or is_udef_macro:
             if head == self.asl_if:
                 # The head is (some name for) asl_if
                 # If needs exactly three arguments
-                if raw_args and raw_args[1] and raw_args[1][1]:
-                    if not raw_args[1][1][1]:
-                        condition = self.asl_eval(raw_args[0])
-                        if condition == 0 or condition == nil:
-                            expression = raw_args[1][1][0]
-                        else:
-                            expression = raw_args[1][0]
+                if_args = list(islice(cons_iter(raw_args), 4))
+                if len(if_args) == 3:
+                    condition = self.asl_eval(if_args[0])
+                    if self.asl_bool(condition):
+                        # Use the true branch
+                        expression = if_args[1]
                     else:
-                        # TODO: exact numbers
-                        error("too many arguments for if")
-                        raise TypeError
+                        # Use the false branch
+                        expression = if_args[2]
+                elif len(if_args) > 3:
+                    error("if takes 3 arguments, not more")
+                    raise TypeError
                 else:
-                    error("not enough arguments for if")
+                    error("if takes 3 arguments, not", len(if_args))
                     raise TypeError
             elif head == self.asl_eval:
                 # The head is (some name for) asl_eval
                 # Eval needs exactly one argument
-                if raw_args:
-                    if not raw_args[1]:
-                        expression = self.asl_eval(raw_args[0])
-                    else:
-                        # TODO: exact numbers
-                        error("too many arguments for eval")
-                        raise TypeError
-                else:
-                    error("not enough arguments for eval")
+                eval_args = list(islice(cons_iter(raw_args), 2))
+                if len(eval_args) == 1:
+                    expression = self.asl_eval(eval_args[0])
+                elif len(eval_args) > 1:
+                    error("eval takes 1 argument, not more")
+                    raise TypeError
+                else: # zero arguments given
+                    error("eval requires an argument")
                     raise TypeError
             elif is_udef_macro:
                 # The head is a list representing a user-defined macro
-                macro_params = head[1][0]
-                macro_body = head[1][1][0]
+                flag, macro_params, macro_body = cons_iter(head)
                 macro_names = {}
                 try:
                     self.bind_params(macro_params, raw_args, macro_names)
@@ -498,13 +557,15 @@ user-defined macros.
                     raise
                 # Substitute the arguments for the parameter names in
                 # the macro body expression
-                expression = self.replace(macro_names, macro_body)
+                expression = self.replace(macro_names,
+                                          resolve_thunks(macro_body))
+            expression = resolve_thunks(expression)
             if expression and isinstance(expression, tuple):
                 # The result was a nonempty s-expression which could be
                 # another macro invocation, so set up for another trip
                 # through the loop
                 head, raw_args = expression
-                head = self.asl_eval(head)
+                head = resolve_thunks(self.asl_eval(head))
                 is_udef_macro = self.is_macro(head)
             else:
                 # The result was nil or something other than an
@@ -516,10 +577,17 @@ user-defined macros.
 
     def is_macro(self, expression):
         """Does an expression represent a user-defined macro?"""
-        if (expression and isinstance(expression, tuple)
-                and isinstance(expression[0], int) and expression[1]
-                and expression[1][1] and not expression[1][1][1]):
-            return True
+        expression = resolve_thunks(expression)
+        # A macro must be a nonempty list (i.e. nested tuple)
+        if expression and isinstance(expression, tuple):
+            # Its first element must be an integer
+            head = resolve_thunks(expression[0])
+            if isinstance(head, int):
+                # And it must have two other elements (params and body)
+                tail = list(islice(cons_iter(expression[1]), 3))
+                return (len(tail) == 2)
+            else:
+                return False
         else:
             return False
 
@@ -531,7 +599,7 @@ Names that aren't in bindings are left untouched.
 """
         if expression and isinstance(expression, tuple):
             # An s-expression
-            head, tail = expression
+            head, tail = map(resolve_thunks, expression)
             return (self.replace(bindings, head),
                     self.replace(bindings, tail))
         elif isinstance(expression, str) and expression in bindings:
@@ -564,7 +632,9 @@ Names that aren't in bindings are left untouched.
     @function
     @params(2)
     def asl_cons(self, head, tail):
-        if isinstance(tail, tuple):
+        if isinstance(tail, tuple) or isinstance(tail, Thunk):
+            # TODO: do we need to resolve a tail thunk one level to
+            # make sure it's a list?
             return (head, tail)
         else:
             error("cannot cons to", self.asl_type(tail), "in Appleseed")
@@ -572,6 +642,7 @@ Names that aren't in bindings are left untouched.
 
     @function
     @params(1)
+    @no_thunks
     def asl_head(self, lyst):
         if isinstance(lyst, tuple):
             if lyst == nil:
@@ -584,6 +655,7 @@ Names that aren't in bindings are left untouched.
 
     @function
     @params(1)
+    @no_thunks
     def asl_tail(self, lyst):
         if isinstance(lyst, tuple):
             if lyst == nil:
@@ -596,6 +668,7 @@ Names that aren't in bindings are left untouched.
 
     @function
     @params(2)
+    @no_thunks
     def asl_add(self, arg1, arg2):
         if isinstance(arg1, int) and isinstance(arg2, int):
             return arg1 + arg2
@@ -606,6 +679,7 @@ Names that aren't in bindings are left untouched.
 
     @function
     @params(2)
+    @no_thunks
     def asl_sub(self, arg1, arg2):
         if isinstance(arg1, int) and isinstance(arg2, int):
             return arg1 - arg2
@@ -616,6 +690,7 @@ Names that aren't in bindings are left untouched.
 
     @function
     @params(2)
+    @no_thunks
     def asl_mul(self, arg1, arg2):
         if isinstance(arg1, int) and isinstance(arg2, int):
             return arg1 * arg2
@@ -626,6 +701,7 @@ Names that aren't in bindings are left untouched.
 
     @function
     @params(2)
+    @no_thunks
     def asl_div(self, arg1, arg2):
         if isinstance(arg1, int) and isinstance(arg2, int):
             if arg2 != 0:
@@ -640,6 +716,7 @@ Names that aren't in bindings are left untouched.
 
     @function
     @params(2)
+    @no_thunks
     def asl_mod(self, arg1, arg2):
         if isinstance(arg1, int) and isinstance(arg2, int):
             if arg2 != 0:
@@ -654,10 +731,33 @@ Names that aren't in bindings are left untouched.
 
     @function
     @params(2)
+    @no_thunks
     def asl_less(self, arg1, arg2):
-        try:
+        while isinstance(arg1, tuple) and isinstance(arg2, tuple):
+            if arg1 and not arg2:
+                # arg2 is nil and arg1 is non-nil; return falsey
+                return 0
+            elif arg2 and not arg1:
+                # arg1 is nil and arg2 is non-nil; return truthy
+                return 1
+            elif not arg1 and not arg2:
+                # Both are nil; return falsey
+                return 0
+            elif self.asl_less(arg1[0], arg2[0]):
+                # arg1's head is less than arg2's head; return truthy
+                return 1
+            elif self.asl_less(arg2[0], arg1[0]):
+                # arg2's head is less than arg1's head; return falsey
+                return 0
+            else:
+                # The heads are equal, so compare the tails; but do
+                # it with a loop, not recursion
+                arg1 = resolve_thunks(arg1[1])
+                arg2 = resolve_thunks(arg2[1])
+        if (isinstance(arg1, int) and isinstance(arg2, int)
+                or isinstance(arg1, str) and isinstance(arg2, str)):
             return int(arg1 < arg2)
-        except TypeError:
+        else:
             error("cannot use less? to compare", self.asl_type(arg1),
                   "and", self.asl_type(arg2))
             return nil
@@ -665,10 +765,34 @@ Names that aren't in bindings are left untouched.
     @function
     @params(2)
     def asl_equal(self, arg1, arg2):
+        if arg1 == arg2:
+            # Two identical ints, strings, builtins, lists, or thunks;
+            # return truthy
+            return 1
+        arg1 = resolve_thunks(arg1)
+        arg2 = resolve_thunks(arg2)
+        while isinstance(arg1, tuple) and isinstance(arg2, tuple):
+            if arg1 == arg2:
+                # Both nil, or identical heads and identical tails
+                # (possibly involving thunks); return truthy
+                return 1
+            elif arg1 == nil or arg2 == nil:
+                # One argument is nil and the other is non-nil;
+                # return falsey
+                return 0
+            elif not self.asl_equal(arg1[0], arg2[0]):
+                # arg1's head is not equal to arg2's head; return falsey
+                return 0
+            else:
+                # The heads are equal, so compare the tails; but do
+                # it with a loop, not recursion
+                arg1 = resolve_thunks(arg1[1])
+                arg2 = resolve_thunks(arg2[1])
         return int(arg1 == arg2)
 
     @function
     @params(1)
+    @no_thunks
     def asl_eval(self, code, top_level=False):
         if isinstance(code, tuple):
             if code == nil:
@@ -684,6 +808,7 @@ Names that aren't in bindings are left untouched.
                 # resolve_macros encountered an error condition (it
                 # already gave the error message)
                 return nil
+            function = resolve_thunks(function)
             if function is None:
                 # After resolving macros, the result was a simple
                 # value, not an s-expression
@@ -693,8 +818,9 @@ Names that aren't in bindings are left untouched.
                 return self.call(function, raw_args)
             elif function in self.builtins:
                 # Builtin function or macro
-                if function.__name__ in top_level_only_fns and not top_level:
-                    error("call to", function.__name__, "cannot be nested")
+                if function.name in top_level_only_fns and not top_level:
+                    error("call to", builtins[function.name],
+                          "cannot be nested")
                     return nil
                 if function.is_macro:
                     # Macros receive their args unevaluated
@@ -706,11 +832,11 @@ Names that aren't in bindings are left untouched.
                     return function(*args)
                 except TypeError as err:
                     # Wrong number of arguments to builtin
-                    error(function.__name__, "takes", function.param_count,
-                          "arguments, got", len(args))
+                    error(builtins[function.name], "takes",
+                          function.param_count, "arguments, got", len(args))
                     return nil
             else:
-                # Trying to call an int or unevaluated string
+                # Trying to call an int, an unevaluated string, or nil
                 error(function, "is not a function or macro")
                 return nil
         if isinstance(code, int):
@@ -725,12 +851,17 @@ Names that aren't in bindings are left untouched.
             else:
                 error("referencing undefined name", code)
                 return nil
-        else:
-            # Probably a builtin
+        elif code in self.builtins:
+            # Builtin
             return code
+        else:
+            # Code should never get here
+            print(type(code), file=sys.stderr)
+            raise NotImplementedError("unknown type in asl_eval")
 
     @function
     @params(1)
+    @no_thunks
     def asl_type(self, value):
         if isinstance(value, int):
             return "Int"
@@ -738,11 +869,15 @@ Names that aren't in bindings are left untouched.
             return "String"
         elif isinstance(value, tuple):
             return "List"
-        else:
+        elif value in self.builtins:
             return "Builtin"
+        else:
+            # Code should never get here
+            raise NotImplementedError("unknown type in asl_type")
 
     @function
     @params(2)
+    @no_thunks
     def asl_debug(self, output, expression):
         if output is not None:
             print(self.asl_repr(output), file=sys.stderr)
@@ -750,6 +885,7 @@ Names that aren't in bindings are left untouched.
 
     @function
     @params(1)
+    @no_thunks
     def asl_repr(self, value):
         if value == nil:
             result = "()"
@@ -757,31 +893,40 @@ Names that aren't in bindings are left untouched.
             # List (as nested tuple)
             result = "("
             beginning = True
-            for item in cons_iter(value):
+            for index, item in enumerate(cons_iter(value)):
                 if beginning:
                     beginning = False
                 else:
                     result += " "
-                result += self.asl_repr(item)
+                if self.max_list_items and index > self.max_list_items:
+                    # Don't show all of a long list--it could be infinite
+                    result += "..."
+                    break
+                else:
+                    result += self.asl_repr(item)
             result += ")"
         elif value in self.builtins:
             # One of the builtin functions or macros
             result = ("<builtin %s %s>"
                       % ("macro" if value.is_macro else "function",
-                         value.__name__))
+                         builtins[value.name]))
         elif isinstance(value, str):
             # String
             if any(c in value for c in WHITESPACE + SYMBOLS):
                 result = '"' + value + '"'
             else:
                 result = value
-        else:
+        elif isinstance(value, int):
             # Integer
             result = str(value)
+        else:
+            # Code should never get here
+            raise NotImplementedError("unknown type in asl_repr")
         return result
     
     @function
     @params(1)
+    @no_thunks
     def asl_str(self, value):
         if isinstance(value, str):
             return value
@@ -805,10 +950,11 @@ Names that aren't in bindings are left untouched.
             return result
         else:
             # Builtin
-            return value.__name__
+            return builtins[value.name]
 
     @function
     @params(1)
+    @no_thunks
     def asl_chars(self, value):
         if isinstance(value, str):
             result = nil
@@ -819,6 +965,15 @@ Names that aren't in bindings are left untouched.
             error("argument of chars must be String, not",
                   self.asl_type(value))
             return nil
+
+    @function
+    @params(1)
+    @no_thunks
+    def asl_bool(self, value):
+        if value == 0 or value == nil or value == "":
+            return 0
+        else:
+            return 1
 
     @macro
     @params(2)
@@ -840,10 +995,10 @@ Names that aren't in bindings are left untouched.
         # Arguments are not pre-evaluated, so cond needs to be evaluated
         # here
         cond = self.asl_eval(cond)
-        if cond == 0 or cond == nil:
-            return self.asl_eval(falseval)
-        else:
+        if self.asl_bool(cond):
             return self.asl_eval(trueval)
+        else:
+            return self.asl_eval(falseval)
 
     @macro
     @params(1)
@@ -889,7 +1044,7 @@ Names that aren't in bindings are left untouched.
     @macro
     @params(0)
     def asl_restart(self):
-        self.__init__(repl=self.repl)
+        self.__init__(repl=self.repl, max_list_items=self.max_list_items)
         self.inform("Restarting...")
         return None
 
@@ -925,7 +1080,7 @@ def repl(environment=None):
     print("Appleseed", VERSION)
     print("Type (help) for information")
     if environment is None:
-        environment = Program(repl=True)
+        environment = Program(repl=True, max_list_items=20)
     instruction = input_instruction()
     while True:
         try:

@@ -3,7 +3,8 @@
 (load lists)
 (load metafunctions)
 
-; Takes an integer character code, returns a string containing the associated character
+; Takes an integer character code, returns a string containing the
+; associated character
 (def chr
   (macro (&charcode)
     (str (cons &charcode nil))))
@@ -37,13 +38,6 @@
           0)
         1))))
 
-(def _join2
-  (lambda (string1 string2 sep)
-    (strcat string1 (strcat sep string2))))
-
 (def join
   (lambda (strings sep)
-    (foldl-default
-      (partial _join2 ? ? sep)
-      strings
-      "")))
+    (foldl (partial strcat ? sep ?) strings "")))

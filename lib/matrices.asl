@@ -5,64 +5,53 @@
 (load math)
 
 (def main-diagonal
-  (lambda (matrix (accum nil))
-    (if
-      (both matrix (head matrix))
-      (main-diagonal
-        (map tail (tail matrix))
-        (cons (head (head matrix)) accum))
-      (reverse accum))))
+  (lambda (matrix)
+    (if (both matrix (head matrix))
+      (cons (head (head matrix))
+        (main-diagonal (map tail (tail matrix))))
+      nil)))
 
 (def matrix-trace
   (lambda (matrix)
     (sum (main-diagonal matrix))))
 
 (def transpose
-  (lambda (matrix (accum nil))
+  (lambda (matrix)
     (if (both matrix (all matrix))
-      (transpose
-        (map tail matrix)
-        (cons (map head matrix) accum))
-      (reverse accum))))
+      (cons (map head matrix)
+        (transpose (map tail matrix)))
+      nil)))
 
 (def zip
   (lambda args (transpose args)))
 
-(def _each-head-or-default
-  (lambda (matrix default accum)
-    (if matrix
-      (if (head matrix)
-        (_each-head-or-default
-          (tail matrix)
-          default
-          (cons (head (head matrix)) accum))
-        (_each-head-or-default
-          (tail matrix)
-          default
-          (cons default accum)))
-      (reverse accum))))
-
 (def transpose-default
-  (lambda (matrix default (accum nil))
+  (lambda (matrix default)
     (if (both matrix (any matrix))
-      (transpose-default
-        (map tail matrix)
-        default
-        (cons (_each-head-or-default matrix default nil) accum))
-      (reverse accum))))
+      (cons
+        (map
+          ; TODO: rewrite as just a lambda once we have closures
+          (partial _head-or-default ? default)
+          matrix)
+        (transpose-default (map tail matrix) default))
+      nil)))
 
-(def _zip-with
-  (lambda (func lists accum)
-    (if lists
-      (_zip-with func
-        (tail lists)
-        (cons (apply func (head lists)) accum))
-      (reverse accum))))
+(def _head-or-default
+  (lambda (row default)
+    (if row (head row) default)))
 
-; Takes a function and any number of lists and applies the function to corresponding elements of the lists
+; Takes a function and any number of lists and applies the function to
+; corresponding elements of the lists
 (def zip-with
   (lambda func-and-lists
     (_zip-with
       (head func-and-lists)
-      (transpose (tail func-and-lists))
+      (transpose (tail func-and-lists)))))
+
+(def _zip-with
+  (lambda (func arglists)
+    (if arglists
+      (cons
+        (apply func (head arglists))
+        (_zip-with func (tail arglists)))
       nil)))
