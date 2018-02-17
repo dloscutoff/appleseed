@@ -36,6 +36,17 @@
       (drop (dec count) (tail ls))
       ls)))
 
+; Takes a list and returns an infinite list consisting of its members
+; repeated over and over
+; If the list is empty, returns the empty list
+(def cycle
+  (lambda (ls (partial-ls nil))
+    (if ls
+      (if partial-ls
+        (cons (head partial-ls) (cycle ls (tail partial-ls)))
+        (cycle ls ls))
+      nil)))
+
 (def reverse
   (lambda (ls (accum nil))
     (if ls

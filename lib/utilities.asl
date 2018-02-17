@@ -1,9 +1,12 @@
 
 (def nil ())
-(def Int (q Int))
-(def List (q List))
-(def String (q String))
-(def Builtin (q Builtin))
+(def Int "Int")
+(def List "List")
+(def String "String")
+(def Object "Object")
+(def Builtin "Builtin")
+(def Event "Event")
+(def Action "Action")
 
 (def list (q (args args)))
 

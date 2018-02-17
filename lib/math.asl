@@ -3,12 +3,19 @@
 (load metafunctions)
 (load lists)
 
-; Takes the absolute value of its argument
+; Returns the absolute value of its argument
 (def abs
   (lambda (num)
     (if (negative? num)
       (neg num)
       num)))
+
+; Returns the sign of its argument
+(def sgn
+  (lambda (num)
+    (if (negative? num)
+      -1
+      (if (zero? num) 0 1))))
 
 ; Variadic subtraction function:
 ; - With no arguments, returns 0
@@ -161,6 +168,42 @@
         (_min (tail ls) (head ls))
         (_min (tail ls) smallest))
       smallest)))
+
+(def <ordered?
+  (lambda (ls)
+    (if (tail ls)
+      (both (less? (head ls) (htail ls)) (<ordered? (tail ls)))
+      1)))
+
+(def <
+  (lambda args (<ordered? args)))
+
+(def <=ordered?
+  (lambda (ls)
+    (if (tail ls)
+      (both (not (greater? (head ls) (htail ls))) (<=ordered? (tail ls)))
+      1)))
+
+(def <=
+  (lambda args (<=ordered? args)))
+
+(def >ordered?
+  (lambda (ls)
+    (if (tail ls)
+      (both (greater? (head ls) (htail ls)) (>ordered? (tail ls)))
+      1)))
+
+(def >
+  (lambda args (>ordered? args)))
+
+(def >=ordered?
+  (lambda (ls)
+    (if (tail ls)
+      (both (not (less? (head ls) (htail ls))) (>=ordered? (tail ls)))
+      1)))
+
+(def >=
+  (lambda args (>=ordered? args)))
 
 (def factorial
   (lambda (num) (product (1to num))))
