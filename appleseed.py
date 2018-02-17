@@ -1185,6 +1185,11 @@ if __name__ == "__main__":
         environment = Program()
         for filename in sys.argv[1:]:
             run_file(filename, environment)
-    else:
-        # No filename specified, so...
+    elif sys.stdin.isatty():
+        # No filename specified, and the input is coming from a terminal
         repl()
+    else:
+        # No filenames specified, but input is piped in
+        # From a file or another process
+        environment = Program()
+        environment.execute(sys.stdin.read())
