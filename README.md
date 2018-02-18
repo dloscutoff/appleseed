@@ -18,7 +18,7 @@ Appleseed is currently very much under construction, but the following features 
 
 There are two ways of running Appleseed: from a file, or from the interactive REPL prompt.
 
-- To run code from one or more files, pass the filenames as command-line arguments to the interpreter: `./appleseed.py file1.asl file2.asl`.
+- To run code from a file, pass the filename as a command-line argument to the interpreter: `./appleseed.py file.asl`.
 - To run code from the interactive prompt, run the interpreter without command-line arguments.
 
 Helpful commands when using the REPL:

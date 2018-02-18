@@ -56,12 +56,17 @@ def perform_action(action):
         elif action_name == "ask-line!":
             if "prompt" in action:
                 asl_write(action["prompt"])
+            try:
+                input_line = input()
+            except EOFError:
+                input_line = nil
             action_results.append({"type": "Event",
                                    "name": "receive-line!",
-                                   "line": input()})
+                                   "line": input_line})
         elif action_name == "exit!":
             exit_code = 0 if "exit-code" not in action else action["exit-code"]
             exit(exit_code)
+
 
     # Any other type should generate a warning, probably--TODO
     return action_results

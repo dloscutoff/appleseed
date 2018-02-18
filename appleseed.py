@@ -20,16 +20,20 @@ if __name__ == "__main__":
         # Reset stdin so the program can take user input
         if os.name == "posix":
             try:
-                sys.stdin = open("/dev/tty", "r")
+                terminal_stdin = open("/dev/tty", "r")
             except OSError:
                 # This system doesn't have a terminal; we just leave
                 # stdin alone and let any user input actions in the
                 # program fail
                 # TODO: more graceful ways to handle this?
                 pass
+            else:
+                sys.stdin = terminal_stdin
         elif os.name == "nt":
             try:
-                sys.stdin = open("CON", "r")
+                terminal_stdin = open("CONIN$", "r")
             except OSError:
                 pass
+            else:
+                sys.stdin = terminal_stdin
         run.run_program(code)
