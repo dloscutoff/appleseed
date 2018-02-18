@@ -4,6 +4,7 @@
 (load utilities)
 (load objects)
 (load stdio)
+(load strings)
 
 (def exit!
   (lambda ((exit-code 0))
@@ -12,5 +13,6 @@
 (def die!
   (lambda (message)
     (do
-      (print! message)
+      (error-write! 
+        (strcat message "\n"))
       (exit! 1))))

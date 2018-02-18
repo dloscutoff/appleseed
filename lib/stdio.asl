@@ -8,6 +8,10 @@
   (lambda (val)
     (new Action (name "write!") (value val))))
 
+(def error-write!
+  (lambda (val)
+    (new Action (name "error-write!") (value val))))
+
 (def print!
   (lambda (val)
     (new Action (name "print!") (value val))))
