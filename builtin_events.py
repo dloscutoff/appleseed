@@ -56,6 +56,10 @@ def perform_action(action):
             action_results.append({"type": "Event",
                                    "name": "receive-line!",
                                    "line": input()})
+        elif action_name == "exit!":
+            code = 0 if "code" not in action else action["code"]
+            exit(code)
+
     # Any other type should generate a warning, probably--TODO
     return action_results
 
