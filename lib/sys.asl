@@ -11,6 +11,6 @@
 
 (def die!
   (lambda (message)
-    (list
+    (do
       (print! message)
       (exit! 1))))
