@@ -2,7 +2,7 @@
 from cfg import nil
 import cfg
 import thunk
-
+import sys
 
 builtin_event_names = ["start!", "receive-line!"]
 
@@ -46,6 +46,9 @@ def perform_action(action):
         if action_name == "write!":
             if "value" in action:
                 asl_write(action["value"])
+        elif action_name == "error-write!":
+            if "value" in action:
+                asl_write(action["value"], err=True)
         elif action_name == "print!":
             if "value" in action:
                 asl_write(action["value"])
@@ -60,38 +63,44 @@ def perform_action(action):
             action_results.append({"type": "Event",
                                    "name": "receive-line!",
                                    "line": input_line})
+        elif action_name == "exit!":
+            exit_code = 0 if "exit-code" not in action else action["exit-code"]
+            exit(exit_code)
+
+
     # Any other type should generate a warning, probably--TODO
     return action_results
 
 
-def asl_write(value):
+def asl_write(value, err=False):
+    write = cfg.write if not err else sys.stderr.write
     value = thunk.resolve_thunks(value)
     if value == nil:
-        cfg.write("()")
+        write("()")
     elif isinstance(value, tuple):
         # List (as nested tuple)
-        cfg.write("(")
+        write("(")
         beginning = True
         for index, item in enumerate(thunk.cons_iter(value)):
             if beginning:
                 beginning = False
             else:
-                cfg.write(" ")
+                write(" ")
             asl_write(item)
-        cfg.write(")")
+        write(")")
     elif isinstance(value, int):
         # Integer
-        cfg.write(value)
+        write(value)
     elif isinstance(value, str):
         # String
-        cfg.write(value)
+        write(value)
     elif isinstance(value, dict):
         # Object
-        cfg.write("{")
+        write("{")
         if "type" in value:
-            cfg.write("(type ")
+            write("(type ")
             asl_write(value["type"])
-            cfg.write(")")
+            write(")")
             beginning = False
         else:
             beginning = True
@@ -100,16 +109,16 @@ def asl_write(value):
                 if beginning:
                     beginning = False
                 else:
-                    cfg.write(" ")
-                cfg.write("(")
+                    write(" ")
+                write("(")
                 asl_write(property_name)
-                cfg.write(" ")
+                write(" ")
                 asl_write(property_value)
-                cfg.write(")")
-        cfg.write("}")
+                write(")")
+        write("}")
     elif hasattr(value, "is_macro"):
         # One of the builtin functions or macros
-        cfg.write("<builtin %s %s>"
+        write("<builtin %s %s>"
                   % ("macro" if value.is_macro else "function",
                      builtins[value.name]))
     else:

@@ -9,6 +9,7 @@
 (def Action "Action")
 
 (def list (q (args args)))
+(def do list)
 
 (def macro
   (q
