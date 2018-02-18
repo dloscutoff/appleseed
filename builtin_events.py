@@ -57,8 +57,8 @@ def perform_action(action):
                                    "name": "receive-line!",
                                    "line": input()})
         elif action_name == "exit!":
-            code = 0 if "code" not in action else action["code"]
-            exit(code)
+            exit_code = 0 if "exit-code" not in action else action["exit-code"]
+            exit(exit_code)
 
     # Any other type should generate a warning, probably--TODO
     return action_results

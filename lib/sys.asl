@@ -6,8 +6,8 @@
 (load stdio)
 
 (def exit!
-  (lambda ((code 0))
-    (new Action (name "exit!") (code code))))
+  (lambda ((exit-code 0))
+    (new Action (name "exit!") (exit-code exit-code))))
 
 (def die!
   (lambda (message)
