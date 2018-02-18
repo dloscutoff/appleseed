@@ -53,9 +53,13 @@ def perform_action(action):
         elif action_name == "ask-line!":
             if "prompt" in action:
                 asl_write(action["prompt"])
+            try:
+                input_line = input()
+            except EOFError:
+                input_line = nil
             action_results.append({"type": "Event",
                                    "name": "receive-line!",
-                                   "line": input()})
+                                   "line": input_line})
     # Any other type should generate a warning, probably--TODO
     return action_results
 
