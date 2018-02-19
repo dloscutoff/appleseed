@@ -1,4 +1,4 @@
-
+import execution
 from cfg import nil
 import cfg
 import thunk
@@ -120,7 +120,7 @@ def asl_write(value, err=False):
         # One of the builtin functions or macros
         write("<builtin %s %s>"
                   % ("macro" if value.is_macro else "function",
-                     builtins[value.name]))
+                     execution.builtins[value.name]))
     else:
         # Code should never get here
         raise NotImplementedError("unknown type in asl_write")
