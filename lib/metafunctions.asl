@@ -141,15 +141,15 @@
 ; result needs to be variadic, use variadic-partial
 (def variadic-partial
   (macro &func-and-args
+    (list
+      (q _varargs)
       (list
-        (q _varargs)
+        (q apply)
+        (quote (eval (head &func-and-args)))
         (list
-          (q apply)
-          (quote (eval (head &func-and-args)))
-          (list
-            (q concat)
-            (quote (eval-each (tail &func-and-args)))
-            (q _varargs))))))
+          (q concat)
+          (quote (eval-each (tail &func-and-args)))
+          (q _varargs))))))
 
 ; Composes functions together; for example, (compose f g h) returns a new
 ; function that passes its argument to h, the result to g, and that result
