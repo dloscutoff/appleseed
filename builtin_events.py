@@ -1,8 +1,9 @@
 
+import sys
+
 from cfg import nil
 import cfg
 import thunk
-import sys
 
 builtin_event_names = ["start!", "receive-line!"]
 
@@ -40,40 +41,80 @@ def perform_action(action):
             action_results.extend(perform_action(subaction))
     elif isinstance(action, dict) and "name" in action:
         # Single action
-        action_name = action["name"]
-        # TODO: change these from an if statement to a list of
-        # actions that can be augmented by extension code
-        if action_name == "write!":
-            if "value" in action:
-                asl_write(action["value"])
-        elif action_name == "error-write!":
-            if "value" in action:
-                asl_write(action["value"], err=True)
-        elif action_name == "print!":
-            if "value" in action:
-                asl_write(action["value"])
-                print()
-        elif action_name == "ask-line!":
-            if "prompt" in action:
-                asl_write(action["prompt"])
-            try:
-                input_line = input()
-            except EOFError:
-                input_line = nil
-            action_results.append({"type": "Event",
-                                   "name": "receive-line!",
-                                   "line": input_line})
-        elif action_name == "exit!":
-            exit_code = 0 if "exit-code" not in action else action["exit-code"]
-            exit(exit_code)
-
-
+        action_func = builtin_actions.get(action["name"])
+        if action_func is not None:
+            result = action_func(action)
+            if result is not None:
+                action_results.append(result)
+        else:
+            cfg.warn("unknown action:", action["name"])
     # Any other type should generate a warning, probably--TODO
     return action_results
 
 
-def asl_write(value, err=False):
-    write = cfg.write if not err else sys.stderr.write
+def act_print(action):
+    if "value" in action:
+        asl_print(action["value"])
+
+
+def act_print_error(action):
+    if "value" in action:
+        asl_print(action["value"], error=True)
+
+
+def act_write(action):
+    if "value" in action:
+        asl_print(action["value"], newline=False)
+
+
+def act_write_error(action):
+    if "value" in action:
+        asl_print(action["value"], newline=False, error=True)
+
+
+def act_ask_line(action):
+    if "prompt" in action:
+        asl_print(action["prompt"], newline=False)
+    try:
+        input_line = input()
+    except EOFError:
+        input_line = nil
+    # Generate a receive-line! event
+    return {"type": "Event",
+            "name": "receive-line!",
+            "line": input_line}
+
+
+def act_exit(action):
+    exit_code = action.get("exit-code", 0)
+    # TODO: error handling if exit-code isn't an integer
+    exit(exit_code)
+
+
+builtin_actions = {"print!": act_print,
+                   "print-error!": act_print_error,
+                   "write!": act_write,
+                   "write-error!": act_write_error,
+                   "ask-line!": act_ask_line,
+                   "exit!": act_exit,
+                   }
+
+
+def asl_print(value, newline=True, error=False):
+    """Print an Appleseed value.
+
+Note: this function will print infinite lists infinitely, giving output
+until the program is stopped.
+Keyword arguments:
+- newline: print with a final newline (default True)
+- error: print to stderr instead of stdout (default False)
+"""
+    if error:
+        def write(string):
+            print(string, end="", file=sys.stderr)
+    else:
+        def write(string):
+            print(string, end="")
     value = thunk.resolve_thunks(value)
     if value == nil:
         write("()")
@@ -86,7 +127,7 @@ def asl_write(value, err=False):
                 beginning = False
             else:
                 write(" ")
-            asl_write(item)
+            asl_print(item, newline=newline, error=error)
         write(")")
     elif isinstance(value, int):
         # Integer
@@ -99,7 +140,7 @@ def asl_write(value, err=False):
         write("{")
         if "type" in value:
             write("(type ")
-            asl_write(value["type"])
+            asl_print(value["type"], newline=newline, error=error)
             write(")")
             beginning = False
         else:
@@ -111,9 +152,9 @@ def asl_write(value, err=False):
                 else:
                     write(" ")
                 write("(")
-                asl_write(property_name)
+                asl_print(property_name, newline=newline, error=error)
                 write(" ")
-                asl_write(property_value)
+                asl_print(property_value, newline=newline, error=error)
                 write(")")
         write("}")
     elif hasattr(value, "is_macro"):
@@ -123,4 +164,7 @@ def asl_write(value, err=False):
                      builtins[value.name]))
     else:
         # Code should never get here
-        raise NotImplementedError("unknown type in asl_write")
+        raise NotImplementedError("unknown type in asl_print")
+    if newline:
+        write("\n")
+

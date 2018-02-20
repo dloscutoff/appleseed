@@ -13,6 +13,5 @@
 (def die!
   (lambda (message)
     (do
-      (error-write! 
-        (strcat message "\n"))
+      (print-error! message)
       (exit! 1))))
