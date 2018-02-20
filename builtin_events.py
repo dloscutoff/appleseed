@@ -3,6 +3,7 @@ import sys
 
 from cfg import nil
 import cfg
+import execution
 import thunk
 
 builtin_event_names = ["start!", "receive-line!"]
@@ -161,7 +162,7 @@ Keyword arguments:
         # One of the builtin functions or macros
         write("<builtin %s %s>"
                   % ("macro" if value.is_macro else "function",
-                     builtins[value.name]))
+                     execution.builtins[value.name]))
     else:
         # Code should never get here
         raise NotImplementedError("unknown type in asl_print")
