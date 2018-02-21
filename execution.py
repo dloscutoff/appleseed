@@ -30,6 +30,7 @@ builtins = {"asl_cons": "cons",
             "asl_str": "str",
             "asl_chars": "chars",
             "asl_repr": "repr",
+            "asl_bool": "bool",
             # The following seven are macros:
             "asl_def": "def",
             "asl_if": "if",
@@ -455,6 +456,8 @@ Names that aren't in bindings are left untouched.
     @no_thunks
     def asl_add(self, arg1, arg2):
         if isinstance(arg1, int) and isinstance(arg2, int):
+            # Note: this case includes booleans, since in Python they
+            # are special cases of int
             return arg1 + arg2
         else:
             cfg.error("cannot add", self.asl_type(arg1), "and",
@@ -540,7 +543,7 @@ Names that aren't in bindings are left untouched.
                 arg2 = resolve_thunks(arg2[1])
         if (isinstance(arg1, int) and isinstance(arg2, int)
                 or isinstance(arg1, str) and isinstance(arg2, str)):
-            return int(arg1 < arg2)
+            return arg1 < arg2
         else:
             cfg.error("cannot use less? to compare", self.asl_type(arg1),
                       "and", self.asl_type(arg2))
@@ -550,39 +553,34 @@ Names that aren't in bindings are left untouched.
     @params(2)
     def asl_equal(self, arg1, arg2):
         if arg1 == arg2:
-            # Two identical ints, strings, object, builtins, lists,
-            # or thunks; return truthy
-            return 1
+            # Two identical values or thunks
+            return True
         arg1 = resolve_thunks(arg1)
         arg2 = resolve_thunks(arg2)
         while isinstance(arg1, tuple) and isinstance(arg2, tuple):
             if arg1 == arg2:
                 # Both nil, or identical heads and identical tails
-                # (possibly involving thunks); return truthy
-                return 1
+                # (possibly involving thunks)
+                return True
             elif arg1 == nil or arg2 == nil:
-                # One argument is nil and the other is non-nil;
-                # return falsey
-                return 0
+                # One argument is nil and the other is non-nil
+                return False
             elif not self.asl_equal(arg1[0], arg2[0]):
-                # arg1's head is not equal to arg2's head; return falsey
-                return 0
+                # arg1's head is not equal to arg2's head
+                return False
             else:
                 # The heads are equal, so compare the tails; but do
                 # it with a loop, not recursion
                 arg1 = resolve_thunks(arg1[1])
                 arg2 = resolve_thunks(arg2[1])
-        return int(arg1 == arg2)
+        return arg1 == arg2
 
     @function
     @params(1)
     @no_thunks
     def asl_eval(self, code, top_level=False):
-        if isinstance(code, tuple):
-            if code == nil:
-                # Nil evaluates to itself
-                return nil
-            # Otherwise, it's a function/macro call
+        if code and isinstance(code, tuple):
+            # A function/macro call
             function = self.asl_eval(code[0])
             raw_args = code[1]
             # Eliminate any macro calls, including <if> and <eval>
@@ -630,10 +628,14 @@ Names that aren't in bindings are left untouched.
                         raise
                     return nil
             else:
-                # Trying to call an int, an unevaluated string, or nil
+                # Trying to call something other than a builtin or
+                # user-defined function
                 cfg.error(function, "is not a function or macro")
                 return nil
-        if isinstance(code, str):
+        if code == nil:
+            # Nil evaluates to itself
+            return nil
+        elif isinstance(code, str):
             # Name
             if code in self.local_names:
                 return self.local_names[code]
@@ -644,18 +646,21 @@ Names that aren't in bindings are left untouched.
                 return nil
         elif (isinstance(code, int) or isinstance(code, dict)
               or code in self.builtins):
-            # Integer, Object, or Builtin evaluates to itself
+            # Int, Bool, Object, or Builtin evaluates to itself
             return code
         else:
             # Code should never get here
-            raise NotImplementedError("unknown type in asl_eval:", type(code))
+            raise NotImplementedError("unknown type in asl_eval: %s"
+                                      % type(code))
 
     @function
     @params(1)
     @no_thunks
     def asl_type(self, value):
-        # TODO: change this to base-type
-        if isinstance(value, int):
+        # TODO: change this to base-type?
+        if isinstance(value, bool):
+            return "Bool"
+        elif isinstance(value, int):
             return "Int"
         elif isinstance(value, str):
             return "String"
@@ -699,6 +704,9 @@ Names that aren't in bindings are left untouched.
                 else:
                     result += self.asl_repr(item)
             result += ")"
+        elif isinstance(value, bool):
+            # Boolean
+            result = "true" if value else "false"
         elif isinstance(value, int):
             # Integer
             result = str(value)
@@ -741,10 +749,7 @@ Names that aren't in bindings are left untouched.
     @params(1)
     @no_thunks
     def asl_str(self, value):
-        if isinstance(value, int):
-            # TBD: chr(value) instead?
-            return str(value)
-        elif isinstance(value, tuple):
+        if isinstance(value, tuple):
             result = ""
             for char_code in cons_iter(value):
                 if isinstance(char_code, int):
@@ -760,7 +765,7 @@ Names that aren't in bindings are left untouched.
                     return nil
             return result
         else:
-            cfg.error("argument of str must be Int or list of Ints, not",
+            cfg.error("argument of str must be list of Ints, not",
                       self.asl_type(value),
                       "\nDid you mean to use repr instead?")
             return builtins[value.name]
@@ -783,10 +788,7 @@ Names that aren't in bindings are left untouched.
     @params(1)
     @no_thunks
     def asl_bool(self, value):
-        if value == 0 or value == nil or value == "" or value == {}:
-            return 0
-        else:
-            return 1
+        return value not in (0, False, nil, "", {})
 
     @macro
     @params(2)
@@ -799,7 +801,8 @@ Names that aren't in bindings are left untouched.
                 self.global_names[name] = self.asl_eval(value)
                 return name
         else:
-            cfg.error("cannot define", self.asl_type(name), name)
+            cfg.error("cannot define", self.asl_type(name),
+                      self.asl_repr(name))
             return nil
 
     @macro
@@ -902,7 +905,7 @@ Names that aren't in bindings are left untouched.
             # can't modify any properties; but we'll still return
             # the object as-is
             if new_properties:
-                cfg.error("cannot set properties of", self.asl_type(obj))
+                cfg.warn("cannot set properties of", self.asl_type(obj))
             return obj
 
     @macro

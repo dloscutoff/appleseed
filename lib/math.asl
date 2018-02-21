@@ -173,7 +173,7 @@
   (lambda (ls)
     (if (tail ls)
       (both (less? (head ls) (htail ls)) (<ordered? (tail ls)))
-      1)))
+      true)))
 
 (def <
   (lambda args (<ordered? args)))
@@ -182,7 +182,7 @@
   (lambda (ls)
     (if (tail ls)
       (both (not (greater? (head ls) (htail ls))) (<=ordered? (tail ls)))
-      1)))
+      true)))
 
 (def <=
   (lambda args (<=ordered? args)))
@@ -191,7 +191,7 @@
   (lambda (ls)
     (if (tail ls)
       (both (greater? (head ls) (htail ls)) (>ordered? (tail ls)))
-      1)))
+      true)))
 
 (def >
   (lambda args (>ordered? args)))
@@ -200,7 +200,7 @@
   (lambda (ls)
     (if (tail ls)
       (both (not (less? (head ls) (htail ls))) (>=ordered? (tail ls)))
-      1)))
+      true)))
 
 (def >=
   (lambda args (>=ordered? args)))
@@ -214,18 +214,18 @@
 (def prime?
   (lambda (num)
     (if (equal? num -1)
-      1
+      true
       (if (less? num 2)
-        0
+        false
         (_prime? num 2)))))
 
 (def _prime?
   (lambda (num factor)
     (if (less? factor num)
       (if (divides? factor num)
-        0
+        false
         (_prime? num (inc factor)))
-      1)))
+      true)))
 
 ; Called without arguments, returns an infinite list of the prime numbers
 ; using the Sieve of Eratosthenes

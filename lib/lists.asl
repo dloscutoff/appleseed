@@ -110,9 +110,9 @@
   (lambda (ls item)
     (if ls
       (if (equal? (head ls) item)
-        1
+        true
         (contains? (tail ls) item))
-      0)))
+      false)))
 
 (def count-occurrences
   (lambda (item ls (count 0))
@@ -205,13 +205,13 @@
     (if ls
       (if (head ls)
         (all (tail ls))
-        0)
-      1)))
+        false)
+      true)))
 
 (def any
   (lambda (ls)
     (if ls
       (if (head ls)
-        1
+        true
         (any (tail ls)))
-      0)))
+      false)))

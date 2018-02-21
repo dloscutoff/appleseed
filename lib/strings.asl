@@ -36,9 +36,9 @@
           (if string
             (if (equal? (head prefix) (head string))
               (starts-with? (tail prefix) (tail string))
-              0)
-            0)
-          1)))))
+              false)
+            false)
+          true)))))
 
 (def join
   (lambda (strings sep)
@@ -58,7 +58,7 @@
 ; - <digits-only>: false if we're still accepting leading spaces or
 ;   minus sign, true if the parsing now requires digits
 (def _parse-int
-  (lambda (charcodes (digits-only 0) (accum 0))
+  (lambda (charcodes (digits-only false) (accum 0))
     ; If the list of charcodes has run out, return <accum>
     (if charcodes
       ; If the first charcode is a digit, shift the value in <accum> up
@@ -67,7 +67,7 @@
       (if (<= 48 (head charcodes) 57)
         (_parse-int
           (tail charcodes)
-          1
+          true
           (add (mul accum 10) (sub (head charcodes) 48)))
         ; Else, if the charcode isn't a digit and we require digits
         ; only, stop parsing and return <accum>
@@ -79,7 +79,7 @@
             ; Else, if the charcode is a minus sign, parse an integer
             ; (digits only) and return its negation
             (if (equal? (head charcodes) (asc "-"))
-              (neg (_parse-int (tail charcodes) 1))
+              (neg (_parse-int (tail charcodes) true))
               ; Else, this isn't a valid character; stop parsing and
               ; return <accum>
               accum))))

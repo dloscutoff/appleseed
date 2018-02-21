@@ -186,6 +186,9 @@ def parse_name_or_literal(token):
     if token.isdigit() or token.startswith("-") and token[1:].isdigit():
         # Integer literal
         return int(token)
+    elif token in ["true", "false"]:
+        # Boolean literal
+        return bool(token == "true")
     else:
         # If it's not any kind of recognized literal, it's a name
         return token

@@ -1,6 +1,7 @@
 
 (def nil ())
 (def Int "Int")
+(def Bool "Bool")
 (def List "List")
 (def String "String")
 (def Object "Object")
@@ -40,7 +41,7 @@
 (def htail (macro (&ls) (head (tail &ls))))
 (def ttail (macro (&ls) (tail (tail &ls))))
 
-(def not (macro (&val) (if &val 0 1)))
+(def not (macro (&val) (if &val false true)))
 
 (def both
   (macro (&expr1 &expr2)
@@ -52,7 +53,7 @@
 
 (def neither
   (macro (&expr1 &expr2)
-    (if &expr1 0 (not &expr2))))
+    (if &expr1 false (not &expr2))))
 
 (def and
   (macro &exprs
@@ -65,18 +66,20 @@
               (tail &exprs)))
           (eval (head &exprs)))
         (eval (head &exprs)))
-      1)))
+      true)))
 
 (def or
   (macro &exprs
-    (if (tail &exprs)
-      (if (eval (head &exprs))
-        (eval (head &exprs))
-        (eval
-          (cons
-            (q or)
-            (tail &exprs))))
-      (eval (head &exprs)))))
+    (if &exprs
+      (if (tail &exprs)
+        (if (eval (head &exprs))
+          (eval (head &exprs))
+          (eval
+            (cons
+              (q or)
+              (tail &exprs))))
+      (eval (head &exprs)))
+    false)))
 
 (def if-not
   (macro (&test &expr1 &expr2)
