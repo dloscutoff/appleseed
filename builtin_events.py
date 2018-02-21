@@ -130,11 +130,9 @@ Keyword arguments:
                 write(" ")
             asl_print(item, newline=newline, error=error)
         write(")")
-    elif isinstance(value, int):
-        # Integer
-        write(value)
-    elif isinstance(value, str):
-        # String
+    elif isinstance(value, bool):
+        write("true" if value else "false")
+    elif (isinstance(value, int) or isinstance(value, str)):
         write(value)
     elif isinstance(value, dict):
         # Object
