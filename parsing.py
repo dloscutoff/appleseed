@@ -46,7 +46,7 @@ def scan(code):
                 # case, code[i] is the final newline, so yield
                 # everything but the newline, with a supplied
                 # closing delimiter, as the extended token
-                warn("unterminated backtick-enclosed token")
+                cfg.warn("unterminated backtick-enclosed token")
                 yield code[a:i] + cfg.TOKEN_DELIMITER
             else:
                 # For properly terminated extended tokens, the while
@@ -66,13 +66,13 @@ def scan(code):
             i += 1
             while code[i] != cfg.STRING_DELIMITER:
                 if code[i] == "\n":
-                    warn("unterminated string literal")
+                    cfg.warn("unterminated string literal")
                     yield code[a:i] + cfg.STRING_DELIMITER
                     i -= 1
                     break
                 elif code[i] == cfg.STRING_ESCAPE_CHAR:
                     if code[i+1] == "\n":
-                        warn("unterminated string literal")
+                        cfg.warn("unterminated string literal")
                         yield (code[a:i+1]
                                + cfg.STRING_ESCAPE_CHAR
                                + cfg.STRING_DELIMITER)
@@ -96,60 +96,97 @@ def scan(code):
 
 
 def parse(code):
-    """Take code and turn it into a parse tree.
+    """Take a series of expressions, yield a series of parse trees.
 
 The code can be a string or an iterator that yields tokens.
-The resulting parse tree is an Appleseed list (i.e. nested tuples).
+Each resulting parse tree is an Appleseed list (i.e. nested tuples).
 """
     if isinstance(code, str):
         # If we're given a raw codestring, scan it before parsing
         code = scan(code)
-    rest = None
-    while rest is None:
-        try:
+    try:
+        while True:
             token = next(code)
-        except StopIteration:
-            # If there's still more to parse and we've run out of tokens,
-            # supply missing close-parens
-            token = ")"
-        if token == "(":
-            element = parse(code)
-        elif token == cfg.BLOCK_COMMENT_OPEN:
-            rest_of_comment = parse(code)
-            return parse(code)
-        elif token == ")":
-            return ()
-        elif token.startswith(cfg.TOKEN_DELIMITER):
-            # Extended token
-            # Strip the delimiters from the outside
-            element = token[1:-1]
-            # Replace the doubled-delimiter escape sequences
-            element = element.replace(cfg.TOKEN_DELIMITER * 2,
-                                      cfg.TOKEN_DELIMITER)
-        elif token.startswith(cfg.STRING_DELIMITER):
-            # Literal strings are auto-quoted tokens
-            # Strip the delimiters from the outside
-            token = token[1:-1]
-            # Replace the escape sequences
-            i = 0
-            string = ""
-            while i < len(token):
-                if token[i] == cfg.STRING_ESCAPE_CHAR:
-                    i += 1
-                    if token[i] in [cfg.STRING_ESCAPE_CHAR,
-                                    cfg.STRING_DELIMITER]:
-                        string += token[i]
-                    elif token[i] == "n":
-                        string += "\n"
-                    elif token[i] == "t":
-                        string += "\t"
-                    else:
-                        string += cfg.STRING_ESCAPE_CHAR + token[i]
-                else:
-                    string += token[i]
+            if token == "(":
+                # After an opening parenthesis, parse expressions until
+                # the matching closing parenthesis and yield the
+                # resulting nested-tuple list
+                yield parse_expressions(code)
+            elif token == cfg.BLOCK_COMMENT_OPEN:
+                # After a block comment opener, parse expressions until
+                # the matching closing parenthesis and discard
+                parse_expressions(code)
+            elif token == ")":
+                cfg.warn("unmatched closing parenthesis")
+            else:
+                yield parse_name_or_literal(token)
+    except StopIteration:
+        # Everything has been parsed
+        pass
+    
+
+def parse_expressions(code):
+    """Take a token iterator and parse expressions from it until ).
+
+This function assumes we're parsing an s-expression and that the
+opening parenthesis has already been processed. So we parse the items
+or [sub]expressions in the s-expr one after the other, turning them
+into a cons list of nested tuples. When we go to parse another item
+and we find a closing parenthesis, we've hit the end of the s-expr, so
+we return nil.
+"""
+    try:
+        token = next(code)
+    except StopIteration:
+        # If the s-expression is unfinished and we've run out of tokens,
+        # supply the missing close-paren
+        # TODO: some kind of warning about implicit close-parens
+        token = ")"
+    if token == ")":
+        return cfg.nil
+    elif token == "(":
+        # The subexpression is itself a list
+        expr = parse_expressions(code)
+    elif token == cfg.BLOCK_COMMENT_OPEN:
+        rest_of_comment = parse_expressions(code)
+        return parse_expressions(code)
+    else:
+        expr = parse_name_or_literal(token)
+    return (expr, parse_expressions(code))
+
+
+def parse_name_or_literal(token):
+    if token.startswith(cfg.STRING_DELIMITER):
+        # Literal strings are auto-quoted String tokens
+        # Strip the delimiters from the outside
+        token = token[1:-1]
+        # Replace the escape sequences
+        i = 0
+        string = ""
+        while i < len(token):
+            if token[i] == cfg.STRING_ESCAPE_CHAR:
                 i += 1
-            element = ("q", (string, ()))
-        else:
-            element = token
-        return (element, parse(code))
+                if token[i] in [cfg.STRING_ESCAPE_CHAR,
+                                cfg.STRING_DELIMITER]:
+                    string += token[i]
+                elif token[i] == "n":
+                    string += "\n"
+                elif token[i] == "t":
+                    string += "\t"
+                else:
+                    string += cfg.STRING_ESCAPE_CHAR + token[i]
+            else:
+                string += token[i]
+            i += 1
+        return ("q", (string, ()))
+    if token.startswith(cfg.TOKEN_DELIMITER):
+        # `Extended `` token`
+        token = token[1:-1]
+        token = token.replace(cfg.TOKEN_DELIMITER * 2, cfg.TOKEN_DELIMITER)
+    if token.isdigit() or token.startswith("-") and token[1:].isdigit():
+        # Integer literal
+        return int(token)
+    else:
+        # If it's not any kind of recognized literal, it's a name
+        return token
 

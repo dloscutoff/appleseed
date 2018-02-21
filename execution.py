@@ -108,7 +108,7 @@ class Program:
 
     def execute(self, code):
         if isinstance(code, str):
-            # First determine whether the code is in single-line or
+            # Determine whether the code is in single-line or
             # multiline form:
             # In single-line form, the code is parsed one line at a time
             # with closing parentheses inferred at the end of each line
@@ -120,25 +120,27 @@ class Program:
             codelines = code.split("\n")
             multiline = any(line.count(")") > line.count("(")
                             for line in codelines)
-            if not multiline:
-                for codeline in codelines:
-                    result = self.execute(parse(codeline))
-                return result
+            result = None
+            if multiline:
+                # Parse code as a whole
+                for expr in parse(code):
+                    result = self.execute_expression(expr)
             else:
-                code = parse(code)
-        # Evaluate each expression in the code and (possibly) display it
-        result = nil
-        for expr in cons_iter(code):
-            # Figure out which function the outermost call is
-            outer_function = None
-            if expr and isinstance(expr, tuple) and isinstance(expr[0], str):
-                outer_function = self.asl_eval(expr[0])
-                if outer_function in self.builtins:
-                    outer_function = outer_function.name
-            result = self.asl_eval(expr, top_level=True)
-            # If running in repl mode, display the result
-            if self.repl:
-                self.display(result)
+                # Parse each line separately
+                for codeline in codelines:
+                    for expr in parse(codeline):
+                        result = self.execute_expression(expr)
+            return result
+        else:
+            raise NotImplementedError("Argument to execute() must be "
+                                      "str, not %s" % type(code))
+    
+    def execute_expression(self, expr):
+        """Evaluate an expression; display it if in repl mode."""
+        result = self.asl_eval(expr, top_level=True)
+        # If running in repl mode, display the result
+        if self.repl:
+            self.display(result)
         return result
 
     def call_data(self, function, raw_args):
@@ -632,11 +634,7 @@ Names that aren't in bindings are left untouched.
                 cfg.error(function, "is not a function or macro")
                 return nil
         if isinstance(code, str):
-            # Name or literal
-            # First see if it can be interpreted as a literal
-            if code.isdigit() or code.startswith("-") and code[1:].isdigit():
-                return int(code)
-            # If that doesn't work, try to look it up as a name
+            # Name
             if code in self.local_names:
                 return self.local_names[code]
             elif code in self.global_names:
@@ -793,7 +791,6 @@ Names that aren't in bindings are left untouched.
     @macro
     @params(2)
     def asl_def(self, name, value):
-        # TODO: figure out how to ban def-ing ints
         if isinstance(name, str):
             if name in self.global_names:
                 cfg.error("name", name, "already in use")
@@ -802,7 +799,7 @@ Names that aren't in bindings are left untouched.
                 self.global_names[name] = self.asl_eval(value)
                 return name
         else:
-            cfg.error("cannot define", self.asl_type(name))
+            cfg.error("cannot define", self.asl_type(name), name)
             return nil
 
     @macro
