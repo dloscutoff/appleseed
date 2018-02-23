@@ -128,7 +128,7 @@ Keyword arguments:
                 beginning = False
             else:
                 write(" ")
-            asl_print(item, newline=newline, error=error)
+            asl_print(item, newline=False, error=error)
         write(")")
     elif isinstance(value, bool):
         write("true" if value else "false")
@@ -139,7 +139,7 @@ Keyword arguments:
         write("{")
         if "type" in value:
             write("(type ")
-            asl_print(value["type"], newline=newline, error=error)
+            asl_print(value["type"], newline=False, error=error)
             write(")")
             beginning = False
         else:
@@ -151,9 +151,9 @@ Keyword arguments:
                 else:
                     write(" ")
                 write("(")
-                asl_print(property_name, newline=newline, error=error)
+                asl_print(property_name, newline=False, error=error)
                 write(" ")
-                asl_print(property_value, newline=newline, error=error)
+                asl_print(property_value, newline=False, error=error)
                 write(")")
         write("}")
     elif hasattr(value, "is_macro"):
