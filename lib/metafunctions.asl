@@ -122,7 +122,7 @@
   (lambda (num)
     (str
       (cons 35
-        (chars (str num))))))
+        (chars (repr num))))))
 
 ; Example of how to use partial: add-n returns a single-argument function
 ; that adds a number to its argument; for example, (add-n 1) does the same
