@@ -31,7 +31,7 @@ builtins = {"asl_cons": "cons",
             "asl_chars": "chars",
             "asl_repr": "repr",
             "asl_bool": "bool",
-            # The following seven are macros:
+            # The following are macros:
             "asl_def": "def",
             "asl_if": "if",
             "asl_quote": "q",
@@ -40,16 +40,20 @@ builtins = {"asl_cons": "cons",
             "asl_get_property": "get-property",
             "asl_copy": "copy",
             "asl_load": "load",
-            # The following three are intended for repl use:
+            # The following are intended for repl use:
             "asl_help": "help",
             "asl_restart": "restart",
             "asl_quit": "quit",
             }
 
-# These are functions and macros that cannot be called from other
-# functions or macros, only from the top level
+# These are macros that cannot be called from other functions or
+# macros, only from the top level
 
-top_level_fns = ["asl_def", "asl_load", "asl_help", "asl_restart", "asl_quit"]
+top_level_macros = ["asl_def", "asl_load"]
+
+# These are macros that can only be called at top level in the repl
+
+repl_macros = ["asl_help", "asl_restart", "asl_quit"]
 
 
 # Decorators for member functions that implement builtins
@@ -106,6 +110,8 @@ class Program:
             builtin = getattr(self, func_name)
             self.builtins.append(builtin)
             self.global_names[asl_func_name] = builtin
+        # Load the standard library
+        self.asl_load("library")
 
     def execute(self, code):
         if isinstance(code, str):
@@ -600,7 +606,12 @@ Names that aren't in bindings are left untouched.
                 return self.call(function, raw_args)
             elif function in self.builtins:
                 # Builtin function or macro
-                if function.name in top_level_fns and not top_level:
+                if not self.repl and function.name in repl_macros:
+                    cfg.error(builtins[function.name], "can only be used",
+                              "in repl mode")
+                    return nil
+                if not top_level and (function.name in top_level_macros
+                                      or function.name in repl_macros):
                     cfg.error("call to", builtins[function.name],
                               "cannot be nested")
                     return nil
