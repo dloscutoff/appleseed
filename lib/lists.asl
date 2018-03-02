@@ -215,3 +215,11 @@
         true
         (any (tail ls)))
       false)))
+
+(def none
+  (lambda (ls)
+    (if ls
+      (if (head ls)
+        false
+        (none (tail ls)))
+      true)))

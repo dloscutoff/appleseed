@@ -612,8 +612,8 @@ Names that aren't in bindings are left untouched.
                     return nil
                 if not top_level and (function.name in top_level_macros
                                       or function.name in repl_macros):
-                    cfg.error("call to", builtins[function.name],
-                              "cannot be nested")
+                    cfg.error(builtins[function.name],
+                              "cannot be called from a user-defined function")
                     return nil
                 if function.is_macro:
                     # Macros receive their args unevaluated
