@@ -91,13 +91,18 @@
 ; - With <base> of 0, it's division by zero
 (def pow
   (lambda (base exponent)
-    (if (negative? exponent)
-      (if base
-        (if (equal? (abs base) 1)
-          (pow base (neg exponent))
-          0)
-        (div 1 0))
-      (product (repeat-val base exponent)))))
+    (if (zero? exponent)
+      1
+      (if (negative? exponent)
+        ; x^-y is 1/x^y
+        (div 1 (pow base (neg exponent)))
+        (if (less? (abs base) 2)
+          ; Special-case <base> of 1, 0, or -1
+          (if (odd? exponent)
+            base
+            (abs base))
+          ; In the general case, pow is a repeated product
+          (product (repeat-val base exponent)))))))
 
 (def gcd
   (lambda (num1 num2)
