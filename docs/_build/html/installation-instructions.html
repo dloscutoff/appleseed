@@ -1,0 +1,117 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Installation and use &#8212; Appleseed  documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial" href="tutorial.html" />
+    <link rel="prev" title="Welcome to Appleseed’s documentation!" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tutorial.html" title="Tutorial"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Appleseed’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Appleseed  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installation-and-use">
+<h1>Installation and use<a class="headerlink" href="#installation-and-use" title="Permalink to this headline">¶</a></h1>
+<p>First things first: to run Appleseed code without installing anything, head over to <a class="reference external" href="https://tio.run/##DcjBDYAgDAXQu1MUTjRxEDfwXNNvYlKBQOP6lXd80rthAhpRFDdNl&#64;FpIyom76VCBR&#64;q85p1fTzVE&#64;UDZm2nsw3TlJk54gc">Try It Online</a>.</p>
+<p>If you want to use the REPL, though, you’ll need to <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code> a local copy of the repository.</p>
+<p>In Bash or Git Bash:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/dloscutoff/appleseed.git
+</pre></div>
+</div>
+<p>Alternately, in Windows using Git GUI, right-click a folder and select Git GUI Here from the context menu. Choose Clone Existing Repository, enter <code class="docutils literal notranslate"><span class="pre">https://github.com/dloscutoff/appleseed.git</span></code> as the Source Location, and enter the path of a folder to create as the Target Directory. Click Clone to create your local copy.</p>
+<p>If you’re on Windows and don’t have Python 3 installed, download and install it from <a class="reference external" href="https://www.python.org/downloads/">Python’s website</a>.</p>
+<p>Now open a command shell, navigate to the directory Appleseed is in, and type <code class="docutils literal notranslate"><span class="pre">./appleseed</span></code> (Linux) or <code class="docutils literal notranslate"><span class="pre">appleseed.py</span></code> (Windows). You should see a welcome message and REPL prompt, something like this:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Appleseed 0.0.3
+Type (help) for information
+Loaded library.asl
+asl&gt;
+</pre></div>
+</div>
+<p>To run a file instead of the REPL, specify the filename as a command-line argument to the interpreter: <code class="docutils literal notranslate"><span class="pre">./appleseed</span> <span class="pre">file.asl</span></code> (Linux) or <code class="docutils literal notranslate"><span class="pre">appleseed.py</span> <span class="pre">file.asl</span></code> (Windows). Or, you can pipe code in on stdin: e.g., <code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">file.asl</span> <span class="pre">|</span> <span class="pre">./appleseed</span></code> (Linux) or <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">file.asl</span> <span class="pre">|</span> <span class="pre">appleseed.py</span></code> (Windows).</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Appleseed’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tutorial.html"
+                        title="next chapter">Tutorial</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/installation-instructions.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tutorial.html" title="Tutorial"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Appleseed’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Appleseed  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, David Loscutoff.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>

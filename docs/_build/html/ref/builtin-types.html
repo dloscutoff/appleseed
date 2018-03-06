@@ -1,0 +1,140 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Built-in types &#8212; Appleseed  documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Appleseed builtins" href="builtins.html" />
+    <link rel="prev" title="Reference" href="../reference.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="builtins.html" title="Appleseed builtins"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../reference.html" title="Reference"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Appleseed  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../reference.html" accesskey="U">Reference</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="built-in-types">
+<h1>Built-in types<a class="headerlink" href="#built-in-types" title="Permalink to this headline">¶</a></h1>
+<p>Appleseed has six data types built in: <a class="reference internal" href="#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>, <a class="reference internal" href="#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>, <a class="reference internal" href="#List" title="List"><code class="xref py py-data docutils literal notranslate"><span class="pre">List</span></code></a>, <a class="reference internal" href="#String" title="String"><code class="xref py py-data docutils literal notranslate"><span class="pre">String</span></code></a>, <a class="reference internal" href="#Object" title="Object"><code class="xref py py-data docutils literal notranslate"><span class="pre">Object</span></code></a>, and <a class="reference internal" href="#Builtin" title="Builtin"><code class="xref py py-data docutils literal notranslate"><span class="pre">Builtin</span></code></a>.</p>
+<dl class="data">
+<dt id="Int">
+<code class="descname">Int</code><a class="headerlink" href="#Int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for integers. Examples: <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">42</span></code>, <code class="docutils literal notranslate"><span class="pre">-5</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="Bool">
+<code class="descname">Bool</code><a class="headerlink" href="#Bool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for truth values <code class="docutils literal notranslate"><span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="List">
+<code class="descname">List</code><a class="headerlink" href="#List" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for lists of zero or more elements. The empty list <code class="docutils literal notranslate"><span class="pre">()</span></code> is also called <em>nil</em>. All non-empty lists can be analyzed as some value (the <em>head</em>) <em>cons</em>’ed to a shorter list (the <em>tail</em>). List elements may be of any type, including other lists. Examples: <code class="docutils literal notranslate"><span class="pre">()</span></code>, <code class="docutils literal notranslate"><span class="pre">(1</span> <span class="pre">2</span> <span class="pre">3)</span></code>, <code class="docutils literal notranslate"><span class="pre">(a</span> <span class="pre">(b</span> <span class="pre">c)</span> <span class="pre">(d</span> <span class="pre">(e</span> <span class="pre">f</span> <span class="pre">())))</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="String">
+<code class="descname">String</code><a class="headerlink" href="#String" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for strings. Unquoted strings in code, such as <code class="docutils literal notranslate"><span class="pre">add</span></code>, are interpreted as names and looked up in the local or global symbol tables. To get a literal string, quote the token like <code class="docutils literal notranslate"><span class="pre">(q</span> <span class="pre">add)</span></code> or surround it in double quotes like <code class="docutils literal notranslate"><span class="pre">&quot;add&quot;</span></code>. Double-quoted strings support escape sequences <code class="docutils literal notranslate"><span class="pre">\&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">\\</span></code>, and <code class="docutils literal notranslate"><span class="pre">\n</span></code>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="Object">
+<code class="descname">Object</code><a class="headerlink" href="#Object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for objects, sets of name-value pairs. Example: <code class="docutils literal notranslate"><span class="pre">(object</span> <span class="pre">(type</span> <span class="pre">Fraction)</span> <span class="pre">(numerator</span> <span class="pre">3)</span> <span class="pre">(denominator</span> <span class="pre">4))</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="Builtin">
+<code class="descname">Builtin</code><a class="headerlink" href="#Builtin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for <a class="reference internal" href="builtins.html"><span class="doc">built-in functions and macros</span></a>.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../reference.html"
+                        title="previous chapter">Reference</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="builtins.html"
+                        title="next chapter">Appleseed builtins</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/ref/builtin-types.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="builtins.html" title="Appleseed builtins"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../reference.html" title="Reference"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Appleseed  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../reference.html" >Reference</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, David Loscutoff.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>

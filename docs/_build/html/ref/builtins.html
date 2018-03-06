@@ -1,0 +1,204 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Appleseed builtins &#8212; Appleseed  documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Standard library functions" href="library.html" />
+    <link rel="prev" title="Built-in types" href="builtin-types.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="library.html" title="Standard library functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="builtin-types.html" title="Built-in types"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Appleseed  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../reference.html" accesskey="U">Reference</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="appleseed-builtins">
+<h1>Appleseed builtins<a class="headerlink" href="#appleseed-builtins" title="Permalink to this headline">¶</a></h1>
+<p>These functions and macros are built in to the Appleseed interpreter. All of them, unlike library functions and macros, have type <a class="reference internal" href="builtin-types.html#Builtin" title="Builtin"><code class="xref py py-data docutils literal notranslate"><span class="pre">Builtin</span></code></a>.</p>
+<div class="section" id="arithmetic">
+<h2>Arithmetic<a class="headerlink" href="#arithmetic" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="add">
+<code class="descname">add</code><a class="headerlink" href="#add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds two numbers. Arguments must be <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>; returns <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sub">
+<code class="descname">sub</code><a class="headerlink" href="#sub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subtracts two numbers. Arguments must be <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>; returns <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="mul">
+<code class="descname">mul</code><a class="headerlink" href="#mul" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiplies two numbers. Arguments must be <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>; returns <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="div">
+<code class="descname">div</code><a class="headerlink" href="#div" title="Permalink to this definition">¶</a></dt>
+<dd><p>Divides two numbers. Note that this is integer division, rounding down: <code class="docutils literal notranslate"><span class="pre">(div</span> <span class="pre">5</span> <span class="pre">3)</span></code> is <code class="docutils literal notranslate"><span class="pre">1</span></code>; <code class="docutils literal notranslate"><span class="pre">(div</span> <span class="pre">-5</span> <span class="pre">3)</span></code> is <code class="docutils literal notranslate"><span class="pre">-2</span></code>. Arguments must be <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>; returns <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>. Errors if the second argument is <code class="docutils literal notranslate"><span class="pre">0</span></code> (or <code class="docutils literal notranslate"><span class="pre">false</span></code>).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="mod">
+<code class="descname">mod</code><a class="headerlink" href="#mod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes two numbers; returns its first argument modulo its second. Follows the same rules as Python regarding negative arguments: the return value is constrained to be between the second argument (exclusive) and zero (inclusive). As a result, <code class="docutils literal notranslate"><span class="pre">(add</span> <span class="pre">(mul</span> <span class="pre">(div</span> <span class="pre">a</span> <span class="pre">b)</span> <span class="pre">b)</span> <span class="pre">(mod</span> <span class="pre">a</span> <span class="pre">b))</span></code> is always equal to <code class="docutils literal notranslate"><span class="pre">a</span></code>. Arguments must be <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>; returns <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>. Errors if the second argument is <code class="docutils literal notranslate"><span class="pre">0</span></code> (or <code class="docutils literal notranslate"><span class="pre">false</span></code>).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lists">
+<h2>Lists<a class="headerlink" href="#lists" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>cons</li>
+<li>head</li>
+<li>tail</li>
+</ul>
+</div>
+<div class="section" id="strings">
+<h2>Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>str</li>
+<li>chars</li>
+<li>repr</li>
+</ul>
+</div>
+<div class="section" id="objects">
+<h2>Objects<a class="headerlink" href="#objects" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>object</li>
+<li>has-property</li>
+<li>get-property</li>
+<li>copy</li>
+</ul>
+</div>
+<div class="section" id="booleans-and-conditionals">
+<h2>Booleans and conditionals<a class="headerlink" href="#booleans-and-conditionals" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>bool</li>
+<li>if</li>
+<li>less?</li>
+<li>equal?</li>
+</ul>
+</div>
+<div class="section" id="other">
+<h2>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>q</li>
+<li>eval</li>
+<li>type</li>
+<li>def</li>
+<li>load</li>
+<li>debug</li>
+</ul>
+</div>
+<div class="section" id="repl-only">
+<h2>REPL only<a class="headerlink" href="#repl-only" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>help</li>
+<li>restart</li>
+<li>quit</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Appleseed builtins</a><ul>
+<li><a class="reference internal" href="#arithmetic">Arithmetic</a></li>
+<li><a class="reference internal" href="#lists">Lists</a></li>
+<li><a class="reference internal" href="#strings">Strings</a></li>
+<li><a class="reference internal" href="#objects">Objects</a></li>
+<li><a class="reference internal" href="#booleans-and-conditionals">Booleans and conditionals</a></li>
+<li><a class="reference internal" href="#other">Other</a></li>
+<li><a class="reference internal" href="#repl-only">REPL only</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="builtin-types.html"
+                        title="previous chapter">Built-in types</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="library.html"
+                        title="next chapter">Standard library functions</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/ref/builtins.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="library.html" title="Standard library functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="builtin-types.html" title="Built-in types"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Appleseed  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../reference.html" >Reference</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, David Loscutoff.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>
