@@ -42,41 +42,41 @@
             
   <div class="section" id="built-in-types">
 <h1>Built-in types<a class="headerlink" href="#built-in-types" title="Permalink to this headline">¶</a></h1>
-<p>Appleseed has six data types built in: <a class="reference internal" href="#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>, <a class="reference internal" href="#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>, <a class="reference internal" href="#List" title="List"><code class="xref py py-data docutils literal notranslate"><span class="pre">List</span></code></a>, <a class="reference internal" href="#String" title="String"><code class="xref py py-data docutils literal notranslate"><span class="pre">String</span></code></a>, <a class="reference internal" href="#Object" title="Object"><code class="xref py py-data docutils literal notranslate"><span class="pre">Object</span></code></a>, and <a class="reference internal" href="#Builtin" title="Builtin"><code class="xref py py-data docutils literal notranslate"><span class="pre">Builtin</span></code></a>.</p>
-<dl class="data">
-<dt id="Int">
-<code class="descname">Int</code><a class="headerlink" href="#Int" title="Permalink to this definition">¶</a></dt>
-<dd><p>Type for integers. Examples: <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">42</span></code>, <code class="docutils literal notranslate"><span class="pre">-5</span></code></p>
+<p>Appleseed has six data types built in: <a class="reference internal" href="#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a>, <a class="reference internal" href="#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a>, <a class="reference internal" href="#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a>, <a class="reference internal" href="#c.String" title="String"><code class="xref c c-type docutils literal notranslate"><span class="pre">String</span></code></a>, <a class="reference internal" href="#c.Object" title="Object"><code class="xref c c-type docutils literal notranslate"><span class="pre">Object</span></code></a>, and <a class="reference internal" href="#c.Builtin" title="Builtin"><code class="xref c c-type docutils literal notranslate"><span class="pre">Builtin</span></code></a>.</p>
+<dl class="type">
+<dt id="c.Int">
+<code class="descname">Int</code><a class="headerlink" href="#c.Int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for integers. In boolean contexts, <code class="docutils literal notranslate"><span class="pre">0</span></code> is treated like <code class="docutils literal notranslate"><span class="pre">false</span></code> and every other number is treated like <code class="docutils literal notranslate"><span class="pre">true</span></code>. Examples: <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">42</span></code>, <code class="docutils literal notranslate"><span class="pre">-5</span></code></p>
 </dd></dl>
 
-<dl class="data">
-<dt id="Bool">
-<code class="descname">Bool</code><a class="headerlink" href="#Bool" title="Permalink to this definition">¶</a></dt>
-<dd><p>Type for truth values <code class="docutils literal notranslate"><span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+<dl class="type">
+<dt id="c.Bool">
+<code class="descname">Bool</code><a class="headerlink" href="#c.Bool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for truth values <code class="docutils literal notranslate"><span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">false</span></code>. In arithmetic contexts, <code class="docutils literal notranslate"><span class="pre">true</span></code> is treated like <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">false</span></code> like <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </dd></dl>
 
-<dl class="data">
-<dt id="List">
-<code class="descname">List</code><a class="headerlink" href="#List" title="Permalink to this definition">¶</a></dt>
-<dd><p>Type for lists of zero or more elements. The empty list <code class="docutils literal notranslate"><span class="pre">()</span></code> is also called <em>nil</em>. All non-empty lists can be analyzed as some value (the <em>head</em>) <em>cons</em>’ed to a shorter list (the <em>tail</em>). List elements may be of any type, including other lists. Examples: <code class="docutils literal notranslate"><span class="pre">()</span></code>, <code class="docutils literal notranslate"><span class="pre">(1</span> <span class="pre">2</span> <span class="pre">3)</span></code>, <code class="docutils literal notranslate"><span class="pre">(a</span> <span class="pre">(b</span> <span class="pre">c)</span> <span class="pre">(d</span> <span class="pre">(e</span> <span class="pre">f</span> <span class="pre">())))</span></code></p>
+<dl class="type">
+<dt id="c.List">
+<code class="descname">List</code><a class="headerlink" href="#c.List" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for lists of zero or more elements. The empty list <code class="docutils literal notranslate"><span class="pre">()</span></code> is referred to as <a class="reference internal" href="glossary.html#nil" title="nil"><code class="xref js js-data docutils literal notranslate"><span class="pre">nil</span></code></a>. All non-empty lists can be analyzed as some value (the <strong>head</strong>) plus a shorter list (the <strong>tail</strong>). List elements may be of any type, including other lists. In boolean contexts, nil is treated like <code class="docutils literal notranslate"><span class="pre">false</span></code> and all non-empty lists like <code class="docutils literal notranslate"><span class="pre">true</span></code>. Examples: <code class="docutils literal notranslate"><span class="pre">()</span></code>, <code class="docutils literal notranslate"><span class="pre">(1</span> <span class="pre">2</span> <span class="pre">3)</span></code>, <code class="docutils literal notranslate"><span class="pre">(a</span> <span class="pre">(b</span> <span class="pre">c)</span> <span class="pre">(d</span> <span class="pre">(e</span> <span class="pre">f</span> <span class="pre">())))</span></code></p>
 </dd></dl>
 
-<dl class="data">
-<dt id="String">
-<code class="descname">String</code><a class="headerlink" href="#String" title="Permalink to this definition">¶</a></dt>
-<dd><p>Type for strings. Unquoted strings in code, such as <code class="docutils literal notranslate"><span class="pre">add</span></code>, are interpreted as names and looked up in the local or global symbol tables. To get a literal string, quote the token like <code class="docutils literal notranslate"><span class="pre">(q</span> <span class="pre">add)</span></code> or surround it in double quotes like <code class="docutils literal notranslate"><span class="pre">&quot;add&quot;</span></code>. Double-quoted strings support escape sequences <code class="docutils literal notranslate"><span class="pre">\&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">\\</span></code>, and <code class="docutils literal notranslate"><span class="pre">\n</span></code>.</p>
+<dl class="type">
+<dt id="c.String">
+<code class="descname">String</code><a class="headerlink" href="#c.String" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for strings. Unquoted strings in code, such as <code class="docutils literal notranslate"><span class="pre">add</span></code>, are interpreted as names and looked up in the local or global symbol tables. To get a literal string, quote the token like <code class="docutils literal notranslate"><span class="pre">(q</span> <span class="pre">add)</span></code> or surround it in double quotes like <code class="docutils literal notranslate"><span class="pre">&quot;add&quot;</span></code>. Double-quoted strings support escape sequences <code class="docutils literal notranslate"><span class="pre">\&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">\\</span></code>, and <code class="docutils literal notranslate"><span class="pre">\n</span></code>. In boolean contexts, <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> (the empty string) is treated like <code class="docutils literal notranslate"><span class="pre">false</span></code> and all non-empty strings like <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
 </dd></dl>
 
-<dl class="data">
-<dt id="Object">
-<code class="descname">Object</code><a class="headerlink" href="#Object" title="Permalink to this definition">¶</a></dt>
-<dd><p>Type for objects, sets of name-value pairs. Example: <code class="docutils literal notranslate"><span class="pre">(object</span> <span class="pre">(type</span> <span class="pre">Fraction)</span> <span class="pre">(numerator</span> <span class="pre">3)</span> <span class="pre">(denominator</span> <span class="pre">4))</span></code></p>
+<dl class="type">
+<dt id="c.Object">
+<code class="descname">Object</code><a class="headerlink" href="#c.Object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for objects, sets of name-value pairs. In boolean contexts,  <code class="docutils literal notranslate"><span class="pre">{}</span></code> (an object with no properties) is treated like <code class="docutils literal notranslate"><span class="pre">false</span></code> and all non-empty objects like <code class="docutils literal notranslate"><span class="pre">true</span></code>. Example: <code class="docutils literal notranslate"><span class="pre">{(type</span> <span class="pre">Fraction)</span> <span class="pre">(numerator</span> <span class="pre">3)</span> <span class="pre">(denominator</span> <span class="pre">4)}</span></code></p>
 </dd></dl>
 
-<dl class="data">
-<dt id="Builtin">
-<code class="descname">Builtin</code><a class="headerlink" href="#Builtin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Type for <a class="reference internal" href="builtins.html"><span class="doc">built-in functions and macros</span></a>.</p>
+<dl class="type">
+<dt id="c.Builtin">
+<code class="descname">Builtin</code><a class="headerlink" href="#c.Builtin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for <a class="reference internal" href="builtins.html"><span class="doc">built-in functions and macros</span></a>. In boolean contexts, all builtins are treated like <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
 </dd></dl>
 
 </div>

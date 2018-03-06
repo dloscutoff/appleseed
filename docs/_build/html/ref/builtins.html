@@ -42,92 +42,215 @@
             
   <div class="section" id="appleseed-builtins">
 <h1>Appleseed builtins<a class="headerlink" href="#appleseed-builtins" title="Permalink to this headline">¶</a></h1>
-<p>These functions and macros are built in to the Appleseed interpreter. All of them, unlike library functions and macros, have type <a class="reference internal" href="builtin-types.html#Builtin" title="Builtin"><code class="xref py py-data docutils literal notranslate"><span class="pre">Builtin</span></code></a>.</p>
+<p>These functions and macros are built in to the Appleseed interpreter. All of them, unlike library functions and macros, have type <a class="reference internal" href="builtin-types.html#c.Builtin" title="Builtin"><code class="xref c c-type docutils literal notranslate"><span class="pre">Builtin</span></code></a>.</p>
 <div class="section" id="arithmetic">
 <h2>Arithmetic<a class="headerlink" href="#arithmetic" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
 <dt id="add">
 <code class="descname">add</code><a class="headerlink" href="#add" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds two numbers. Arguments must be <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>; returns <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>.</p>
+<dd><ul class="simple">
+<li>First argument: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+<li>Second argument: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a></li>
+</ul>
+<p>Adds two numbers.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sub">
 <code class="descname">sub</code><a class="headerlink" href="#sub" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subtracts two numbers. Arguments must be <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>; returns <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>.</p>
+<dd><ul class="simple">
+<li>First argument: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+<li>Second argument: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a></li>
+</ul>
+<p>Subtracts two numbers.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="mul">
 <code class="descname">mul</code><a class="headerlink" href="#mul" title="Permalink to this definition">¶</a></dt>
-<dd><p>Multiplies two numbers. Arguments must be <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>; returns <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>.</p>
+<dd><ul class="simple">
+<li>First argument: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+<li>Second argument: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a></li>
+</ul>
+<p>Multiplies two numbers.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="div">
 <code class="descname">div</code><a class="headerlink" href="#div" title="Permalink to this definition">¶</a></dt>
-<dd><p>Divides two numbers. Note that this is integer division, rounding down: <code class="docutils literal notranslate"><span class="pre">(div</span> <span class="pre">5</span> <span class="pre">3)</span></code> is <code class="docutils literal notranslate"><span class="pre">1</span></code>; <code class="docutils literal notranslate"><span class="pre">(div</span> <span class="pre">-5</span> <span class="pre">3)</span></code> is <code class="docutils literal notranslate"><span class="pre">-2</span></code>. Arguments must be <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>; returns <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>. Errors if the second argument is <code class="docutils literal notranslate"><span class="pre">0</span></code> (or <code class="docutils literal notranslate"><span class="pre">false</span></code>).</p>
+<dd><ul class="simple">
+<li>First argument: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+<li>Second argument: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a></li>
+<li>Errors if: second argument is <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code></li>
+</ul>
+<p>Divides two numbers. Note that this is integer division, rounding down: <code class="docutils literal notranslate"><span class="pre">(div</span> <span class="pre">5</span> <span class="pre">3)</span></code> is <code class="docutils literal notranslate"><span class="pre">1</span></code>; <code class="docutils literal notranslate"><span class="pre">(div</span> <span class="pre">-5</span> <span class="pre">3)</span></code> is <code class="docutils literal notranslate"><span class="pre">-2</span></code>.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="mod">
 <code class="descname">mod</code><a class="headerlink" href="#mod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes two numbers; returns its first argument modulo its second. Follows the same rules as Python regarding negative arguments: the return value is constrained to be between the second argument (exclusive) and zero (inclusive). As a result, <code class="docutils literal notranslate"><span class="pre">(add</span> <span class="pre">(mul</span> <span class="pre">(div</span> <span class="pre">a</span> <span class="pre">b)</span> <span class="pre">b)</span> <span class="pre">(mod</span> <span class="pre">a</span> <span class="pre">b))</span></code> is always equal to <code class="docutils literal notranslate"><span class="pre">a</span></code>. Arguments must be <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#Bool" title="Bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">Bool</span></code></a>; returns <a class="reference internal" href="builtin-types.html#Int" title="Int"><code class="xref py py-data docutils literal notranslate"><span class="pre">Int</span></code></a>. Errors if the second argument is <code class="docutils literal notranslate"><span class="pre">0</span></code> (or <code class="docutils literal notranslate"><span class="pre">false</span></code>).</p>
+<dd><ul class="simple">
+<li>First argument: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+<li>Second argument: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a></li>
+<li>Errors if: second argument is <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code></li>
+</ul>
+<p>Returns its first argument modulo its second. Follows the same rules as Python regarding negative arguments: the return value is constrained to be between the second argument (exclusive) and zero (inclusive). As a result, <code class="docutils literal notranslate"><span class="pre">(add</span> <span class="pre">(mul</span> <span class="pre">(div</span> <span class="pre">a</span> <span class="pre">b)</span> <span class="pre">b)</span> <span class="pre">(mod</span> <span class="pre">a</span> <span class="pre">b))</span></code> is always equal to <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="lists">
 <h2>Lists<a class="headerlink" href="#lists" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>cons</li>
-<li>head</li>
-<li>tail</li>
+<dl class="data">
+<dt id="cons">
+<code class="descname">cons</code><a class="headerlink" href="#cons" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
+<li>First argument: any type</li>
+<li>Second argument: <a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a></li>
 </ul>
+<p>Returns a new list with the first argument as the head and the second argument as the tail.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="head">
+<code class="descname">head</code><a class="headerlink" href="#head" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
+<li>Argument: <a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a></li>
+<li>Returns: any type</li>
+</ul>
+<p>Returns the head (first element) of the argument, or <a class="reference internal" href="glossary.html#nil" title="nil"><code class="xref js js-data docutils literal notranslate"><span class="pre">nil</span></code></a> if the argument is an empty list.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="tail">
+<code class="descname">tail</code><a class="headerlink" href="#tail" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
+<li>Argument: <a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a></li>
+</ul>
+<p>Returns a new list containing the tail (all but the first element) of the argument, or <a class="reference internal" href="glossary.html#nil" title="nil"><code class="xref js js-data docutils literal notranslate"><span class="pre">nil</span></code></a> if the argument is an empty list.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="strings">
 <h2>Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>str</li>
-<li>chars</li>
-<li>repr</li>
-</ul>
+<dl class="data">
+<dt id="str">
+<code class="descname">str</code><a class="headerlink" href="#str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="chars">
+<code class="descname">chars</code><a class="headerlink" href="#chars" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="repr">
+<code class="descname">repr</code><a class="headerlink" href="#repr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="objects">
 <h2>Objects<a class="headerlink" href="#objects" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>object</li>
-<li>has-property</li>
-<li>get-property</li>
-<li>copy</li>
-</ul>
+<dl class="data">
+<dt id="object">
+<code class="descname">object</code><a class="headerlink" href="#object" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt>
+<code class="descname">has-property</code></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt>
+<code class="descname">get-property</code></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="copy">
+<code class="descname">copy</code><a class="headerlink" href="#copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="booleans-and-conditionals">
 <h2>Booleans and conditionals<a class="headerlink" href="#booleans-and-conditionals" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>bool</li>
-<li>if</li>
-<li>less?</li>
-<li>equal?</li>
-</ul>
+<dl class="data">
+<dt id="bool">
+<code class="descname">bool</code><a class="headerlink" href="#bool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="if">
+<code class="descname">if</code><a class="headerlink" href="#if" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt>
+<code class="descname">less?</code></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt>
+<code class="descname">equal?</code></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="other">
 <h2>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>q</li>
-<li>eval</li>
-<li>type</li>
-<li>def</li>
-<li>load</li>
-<li>debug</li>
-</ul>
+<dl class="data">
+<dt id="q">
+<code class="descname">q</code><a class="headerlink" href="#q" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="eval">
+<code class="descname">eval</code><a class="headerlink" href="#eval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="type">
+<code class="descname">type</code><a class="headerlink" href="#type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="def">
+<code class="descname">def</code><a class="headerlink" href="#def" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="load">
+<code class="descname">load</code><a class="headerlink" href="#load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="debug">
+<code class="descname">debug</code><a class="headerlink" href="#debug" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="repl-only">
 <h2>REPL only<a class="headerlink" href="#repl-only" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>help</li>
-<li>restart</li>
-<li>quit</li>
-</ul>
+<dl class="data">
+<dt id="help">
+<code class="descname">help</code><a class="headerlink" href="#help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="restart">
+<code class="descname">restart</code><a class="headerlink" href="#restart" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="quit">
+<code class="descname">quit</code><a class="headerlink" href="#quit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 

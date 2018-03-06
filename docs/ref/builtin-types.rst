@@ -2,29 +2,29 @@
 Built-in types
 ==============
 
-Appleseed has six data types built in: :data:`Int`, :data:`Bool`, :data:`List`, :data:`String`, :data:`Object`, and :data:`Builtin`.
+Appleseed has six data types built in: :c:type:`Int`, :c:type:`Bool`, :c:type:`List`, :c:type:`String`, :c:type:`Object`, and :c:type:`Builtin`.
 
-.. data:: Int
+.. c:type:: Int
 
-   Type for integers. Examples: ``0``, ``42``, ``-5``
+   Type for integers. In boolean contexts, ``0`` is treated like ``false`` and every other number is treated like ``true``. Examples: ``0``, ``42``, ``-5``
    
-.. data:: Bool
+.. c:type:: Bool
 
-   Type for truth values ``true`` and ``false``.
+   Type for truth values ``true`` and ``false``. In arithmetic contexts, ``true`` is treated like ``1`` and ``false`` like ``0``.
 
-.. data:: List
+.. c:type:: List
 
-   Type for lists of zero or more elements. The empty list ``()`` is also called *nil*. All non-empty lists can be analyzed as some value (the *head*) *cons*'ed to a shorter list (the *tail*). List elements may be of any type, including other lists. Examples: ``()``, ``(1 2 3)``, ``(a (b c) (d (e f ())))``
+   Type for lists of zero or more elements. The empty list ``()`` is referred to as :js:data:`nil`. All non-empty lists can be analyzed as some value (the **head**) plus a shorter list (the **tail**). List elements may be of any type, including other lists. In boolean contexts, nil is treated like ``false`` and all non-empty lists like ``true``. Examples: ``()``, ``(1 2 3)``, ``(a (b c) (d (e f ())))``
 
-.. data:: String
+.. c:type:: String
 
-   Type for strings. Unquoted strings in code, such as ``add``, are interpreted as names and looked up in the local or global symbol tables. To get a literal string, quote the token like ``(q add)`` or surround it in double quotes like ``"add"``. Double-quoted strings support escape sequences ``\"``, ``\\``, and ``\n``.
+   Type for strings. Unquoted strings in code, such as ``add``, are interpreted as names and looked up in the local or global symbol tables. To get a literal string, quote the token like ``(q add)`` or surround it in double quotes like ``"add"``. Double-quoted strings support escape sequences ``\"``, ``\\``, and ``\n``. In boolean contexts, ``""`` (the empty string) is treated like ``false`` and all non-empty strings like ``true``.
    
-.. data:: Object
+.. c:type:: Object
 
-   Type for objects, sets of name-value pairs. Example: ``(object (type Fraction) (numerator 3) (denominator 4))``
+   Type for objects, sets of name-value pairs. In boolean contexts,  ``{}`` (an object with no properties) is treated like ``false`` and all non-empty objects like ``true``. Example: ``{(type Fraction) (numerator 3) (denominator 4)}``
 
-.. data:: Builtin
+.. c:type:: Builtin
 
-   Type for :doc:`built-in functions and macros <builtins>`.
+   Type for :doc:`built-in functions and macros <builtins>`. In boolean contexts, all builtins are treated like ``true``.
    

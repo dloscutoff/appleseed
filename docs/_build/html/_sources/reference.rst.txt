@@ -9,3 +9,4 @@ Reference
    ref/builtin-types
    ref/builtins
    ref/library
+   ref/glossary
