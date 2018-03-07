@@ -4,7 +4,7 @@ import os
 from contextlib import contextmanager
 from itertools import zip_longest, islice
 
-from cfg import nil
+from cfg import nil, identical
 import cfg
 from parsing import parse
 from thunk import Thunk, resolve_thunks, cons_iter
@@ -526,11 +526,11 @@ Names that aren't in bindings are left untouched.
     @params(2)
     @no_thunks
     def asl_less(self, arg1, arg2):
-        if arg1 == arg2:
+        if identical(arg1, arg2):
             # Two identical values or thunks
             return False
         while isinstance(arg1, tuple) and isinstance(arg2, tuple):
-            if arg1 == arg2:
+            if identical(arg1, arg2):
                 # Both nil, or identical heads and identical tails
                 # (possibly involving thunks)
                 return False
@@ -562,13 +562,13 @@ Names that aren't in bindings are left untouched.
     @function
     @params(2)
     def asl_equal(self, arg1, arg2):
-        if arg1 == arg2:
+        if identical(arg1, arg2):
             # Two identical values or thunks
             return True
         arg1 = resolve_thunks(arg1)
         arg2 = resolve_thunks(arg2)
         while isinstance(arg1, tuple) and isinstance(arg2, tuple):
-            if arg1 == arg2:
+            if identical(arg1, arg2):
                 # Both nil, or identical heads and identical tails
                 # (possibly involving thunks)
                 return True
@@ -583,7 +583,7 @@ Names that aren't in bindings are left untouched.
                 # it with a loop, not recursion
                 arg1 = resolve_thunks(arg1[1])
                 arg2 = resolve_thunks(arg2[1])
-        return arg1 == arg2
+        return identical(arg1, arg2)
 
     @function
     @params(1)

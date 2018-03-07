@@ -1,5 +1,5 @@
 
-from cfg import nil
+from cfg import nil, identical
 
 
 class Thunk:
@@ -13,10 +13,10 @@ class Thunk:
 
     def __eq__(self, value):
         return (isinstance(value, Thunk)
-                and self.environment == value.environment
+                and identical(self.environment, value.environment)
                 and self.param_names == value.param_names
-                and self.body == value.body
-                and self.arglist == value.arglist)
+                and identical(self.body, value.body)
+                and identical(self.arglist, value.arglist))
 
     def __str__(self):
         return "Thunk(%s, %s, %s)" % (self.body, self.param_names,

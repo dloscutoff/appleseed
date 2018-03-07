@@ -37,3 +37,20 @@ def warn(*args):
 class UserQuit(BaseException):
     pass
 
+
+def identical(value1, value2):
+    while isinstance(value1, tuple) and isinstance(value2, tuple):
+        if value1 == value2 == ():
+            return True
+        elif value1 == () or value2 == ():
+            return False
+        else:
+            if identical(value1[0], value2[0]):
+                value1 = value1[1]
+                value2 = value2[1]
+            else:
+                return False
+    if isinstance(value1, list) and isinstance(value2, list):
+        return all(map(identical, value1, value2))
+    else:
+        return value1 == value2 and type(value1) == type(value2)
