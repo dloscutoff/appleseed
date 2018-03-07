@@ -526,16 +526,20 @@ Names that aren't in bindings are left untouched.
     @params(2)
     @no_thunks
     def asl_less(self, arg1, arg2):
+        if arg1 == arg2:
+            # Two identical values or thunks
+            return False
         while isinstance(arg1, tuple) and isinstance(arg2, tuple):
+            if arg1 == arg2:
+                # Both nil, or identical heads and identical tails
+                # (possibly involving thunks)
+                return False
             if arg1 and not arg2:
                 # arg2 is nil and arg1 is non-nil
                 return False
             elif arg2 and not arg1:
                 # arg1 is nil and arg2 is non-nil
                 return True
-            elif not arg1 and not arg2:
-                # Both are nil
-                return False
             elif self.asl_less(arg1[0], arg2[0]):
                 # arg1's head is less than arg2's head
                 return True
