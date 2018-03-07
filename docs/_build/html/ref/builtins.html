@@ -142,40 +142,41 @@
 <dl class="data">
 <dt id="str">
 <code class="descname">str</code><a class="headerlink" href="#str" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><ul class="simple">
+<li>Argument: <a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.String" title="String"><code class="xref c c-type docutils literal notranslate"><span class="pre">String</span></code></a></li>
+<li>Errors if: argument contains any elements that are not <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+</ul>
+<p>Given a list of character codes, returns a string consisting of those characters.</p>
+</dd></dl>
 
 <dl class="data">
 <dt id="chars">
 <code class="descname">chars</code><a class="headerlink" href="#chars" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><ul class="simple">
+<li>Argument: <a class="reference internal" href="builtin-types.html#c.String" title="String"><code class="xref c c-type docutils literal notranslate"><span class="pre">String</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a></li>
+</ul>
+<p>Given a string, returns a list of its character codes (nonnegative <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a>s).</p>
+</dd></dl>
 
 <dl class="data">
 <dt id="repr">
 <code class="descname">repr</code><a class="headerlink" href="#repr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="objects">
-<h2>Objects<a class="headerlink" href="#objects" title="Permalink to this headline">¶</a></h2>
-<dl class="data">
-<dt id="object">
-<code class="descname">object</code><a class="headerlink" href="#object" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="data">
-<dt>
-<code class="descname">has-property</code></dt>
-<dd></dd></dl>
-
-<dl class="data">
-<dt>
-<code class="descname">get-property</code></dt>
-<dd></dd></dl>
-
-<dl class="data">
-<dt id="copy">
-<code class="descname">copy</code><a class="headerlink" href="#copy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><ul class="simple">
+<li>Argument: any type</li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.String" title="String"><code class="xref c c-type docutils literal notranslate"><span class="pre">String</span></code></a></li>
+</ul>
+<p>Returns a string representing the argument:</p>
+<ul class="simple">
+<li><a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a>: <code class="docutils literal notranslate"><span class="pre">(repr</span> <span class="pre">42)</span></code> → <code class="docutils literal notranslate"><span class="pre">&quot;42&quot;</span></code></li>
+<li><a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a>: <code class="docutils literal notranslate"><span class="pre">(repr</span> <span class="pre">true)</span></code> → <code class="docutils literal notranslate"><span class="pre">&quot;true&quot;</span></code></li>
+<li><a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a>: <code class="docutils literal notranslate"><span class="pre">(repr</span> <span class="pre">(list</span> <span class="pre">1</span> <span class="pre">2</span> <span class="pre">()))</span></code> → <code class="docutils literal notranslate"><span class="pre">&quot;(1</span> <span class="pre">2</span> <span class="pre">())&quot;</span></code></li>
+<li><a class="reference internal" href="builtin-types.html#c.String" title="String"><code class="xref c c-type docutils literal notranslate"><span class="pre">String</span></code></a>: <code class="docutils literal notranslate"><span class="pre">(repr</span> <span class="pre">&quot;xyz&quot;)</span></code> → <code class="docutils literal notranslate"><span class="pre">&quot;xyz&quot;</span></code>; <code class="docutils literal notranslate"><span class="pre">(repr</span> <span class="pre">&quot;xyz</span> <span class="pre">abc&quot;)</span></code> → <code class="docutils literal notranslate"><span class="pre">&quot;`xyz</span> <span class="pre">abc`&quot;</span></code></li>
+<li><a class="reference internal" href="builtin-types.html#c.Object" title="Object"><code class="xref c c-type docutils literal notranslate"><span class="pre">Object</span></code></a>: <code class="docutils literal notranslate"><span class="pre">(repr</span> <span class="pre">(object</span> <span class="pre">(type</span> <span class="pre">&quot;Complex&quot;)</span> <span class="pre">(re</span> <span class="pre">5)</span> <span class="pre">(im</span> <span class="pre">2)))</span></code> → <code class="docutils literal notranslate"><span class="pre">&quot;{(type</span> <span class="pre">Complex)</span> <span class="pre">(im</span> <span class="pre">2)</span> <span class="pre">(re</span> <span class="pre">5)}&quot;</span></code></li>
+<li><a class="reference internal" href="builtin-types.html#c.Builtin" title="Builtin"><code class="xref c c-type docutils literal notranslate"><span class="pre">Builtin</span></code></a>: <code class="docutils literal notranslate"><span class="pre">(repr</span> <span class="pre">add)</span></code> → <code class="docutils literal notranslate"><span class="pre">&quot;&lt;builtin</span> <span class="pre">function</span> <span class="pre">add&gt;&quot;</span></code>; <code class="docutils literal notranslate"><span class="pre">(repr</span> <span class="pre">def)</span></code> → <code class="docutils literal notranslate"><span class="pre">&quot;&lt;builtin</span> <span class="pre">macro</span> <span class="pre">def&gt;&quot;</span></code></li>
+</ul>
+</dd></dl>
 
 </div>
 <div class="section" id="booleans-and-conditionals">
@@ -183,22 +184,125 @@
 <dl class="data">
 <dt id="bool">
 <code class="descname">bool</code><a class="headerlink" href="#bool" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><ul class="simple">
+<li>Argument: any type</li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+</ul>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">false</span></code> if the argument is <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">false</span></code>, <code class="docutils literal notranslate"><span class="pre">()</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">{}</span></code>. Otherwise, returns <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+</dd></dl>
 
 <dl class="data">
 <dt id="if">
 <code class="descname">if</code><a class="headerlink" href="#if" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><ul class="simple">
+<li>Macro</li>
+<li>First argument: any type</li>
+<li>Second argument: any type</li>
+<li>Third argument: any type</li>
+<li>Returns: any type</li>
+</ul>
+<p>Evaluates the first argument (the <strong>condition</strong>). If it is logically true (i.e. passing it to <a class="reference internal" href="#bool" title="bool"><code class="xref py py-data docutils literal notranslate"><span class="pre">bool</span></code></a> would return <code class="docutils literal notranslate"><span class="pre">true</span></code>), evaluates and returns the second argument (the <strong>true branch</strong>). Otherwise, evaluates and returns the third argument (the <strong>false branch</strong>). The branch that is not chosen is never evaluated.</p>
+</dd></dl>
 
 <dl class="data">
 <dt>
 <code class="descname">less?</code></dt>
-<dd></dd></dl>
+<dd><ul class="simple">
+<li>First argument: any type</li>
+<li>Second argument: any type</li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+<li>Errors if: the two arguments’ types are not comparable (see below)</li>
+</ul>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if the first argument is strictly less than the second. Types that can be compared:</p>
+<ul class="simple">
+<li><a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a> can be compared against <a class="reference internal" href="builtin-types.html#c.Int" title="Int"><code class="xref c c-type docutils literal notranslate"><span class="pre">Int</span></code></a> or <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a> (with <code class="docutils literal notranslate"><span class="pre">false</span></code> treated as <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">true</span></code> as <code class="docutils literal notranslate"><span class="pre">1</span></code>)</li>
+<li><a class="reference internal" href="builtin-types.html#c.String" title="String"><code class="xref c c-type docutils literal notranslate"><span class="pre">String</span></code></a> can be compared against <a class="reference internal" href="builtin-types.html#c.String" title="String"><code class="xref c c-type docutils literal notranslate"><span class="pre">String</span></code></a> (using lexicographic ordering)</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a> can be compared against <a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a>:</dt>
+<dd><ul class="first last">
+<li><a class="reference internal" href="glossary.html#nil" title="nil"><code class="xref js js-data docutils literal notranslate"><span class="pre">nil</span></code></a> is less than any list but itself</li>
+<li>For non-empty lists, the heads are compared first</li>
+<li>If the heads are not comparable, the lists are not comparable (an error)</li>
+<li>If the heads are equal, the tails are compared, continuing until the elements are inequal or one or both lists become <a class="reference internal" href="glossary.html#nil" title="nil"><code class="xref js js-data docutils literal notranslate"><span class="pre">nil</span></code></a></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
 
 <dl class="data">
 <dt>
 <code class="descname">equal?</code></dt>
-<dd></dd></dl>
+<dd><ul class="simple">
+<li>First argument: any type</li>
+<li>Second argument: any type</li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+</ul>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if both arguments are of the same type and contain the same data.</p>
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Infinite lists can <em>sometimes</em> be compared with <code class="xref py py-data docutils literal notranslate"><span class="pre">equal?</span></code>. As soon as two elements are different, the result is <code class="docutils literal notranslate"><span class="pre">false</span></code>, of course, but a result of <code class="docutils literal notranslate"><span class="pre">true</span></code> can also be returned if both lists result from identical calls to the same function. For example, <code class="docutils literal notranslate"><span class="pre">(equal?</span> <span class="pre">(tail</span> <span class="pre">(0to))</span> <span class="pre">(1to))</span></code> returns <code class="docutils literal notranslate"><span class="pre">true</span></code>: <code class="docutils literal notranslate"><span class="pre">(1to)</span></code> calls <code class="docutils literal notranslate"><span class="pre">(count-up</span> <span class="pre">1</span> <span class="pre">nil)</span></code>, while <code class="docutils literal notranslate"><span class="pre">(0to)</span></code> calls <code class="docutils literal notranslate"><span class="pre">(count-up</span> <span class="pre">0</span> <span class="pre">nil)</span></code>, which in turn is <code class="docutils literal notranslate"><span class="pre">(cons</span> <span class="pre">0</span> <span class="pre">(count-up</span> <span class="pre">1</span> <span class="pre">nil))</span></code>. Thus, both <code class="docutils literal notranslate"><span class="pre">(tail</span> <span class="pre">(0to))</span></code> and <code class="docutils literal notranslate"><span class="pre">(1to)</span></code> end up as deferred calls to <code class="docutils literal notranslate"><span class="pre">count-up</span></code> with arguments <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">nil</span></code>, and therefore compare as equal.</p>
+<p>However, two infinite lists that are generated in different ways <em>cannot</em> be compared this way, and (if they actually are equal) will result in an infinite loop. For example, <code class="docutils literal notranslate"><span class="pre">(repeat-val</span> <span class="pre">1)</span></code> and <code class="docutils literal notranslate"><span class="pre">(zip-with</span> <span class="pre">sub</span> <span class="pre">(1to)</span> <span class="pre">(0to))</span></code> both happen to return infinite lists of ones, but they are generated by calls to completely different functions, and so Appleseed has no way of knowing that they are equal except to check every value.</p>
+<p>(The same reasoning holds for <code class="xref py py-data docutils literal notranslate"><span class="pre">less?</span></code>, except that it returns <code class="docutils literal notranslate"><span class="pre">false</span></code> when the lists are equal.)</p>
+<p class="last">In summary, while it does work in certain cases, it is not recommended to compare two infinite lists because of the risk of infinite loops.</p>
+</div>
+</div>
+<div class="section" id="objects">
+<h2>Objects<a class="headerlink" href="#objects" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="object">
+<code class="descname">object</code><a class="headerlink" href="#object" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
+<li>Macro</li>
+<li>Takes zero or more arguments</li>
+<li>Each argument: two-item <a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.Object" title="Object"><code class="xref c c-type docutils literal notranslate"><span class="pre">Object</span></code></a></li>
+</ul>
+<p>Creates a new <a class="reference internal" href="builtin-types.html#c.Object" title="Object"><code class="xref c c-type docutils literal notranslate"><span class="pre">Object</span></code></a>. Each argument is a name-value pair for a <a class="reference internal" href="glossary.html#property" title="property"><code class="xref js js-data docutils literal notranslate"><span class="pre">property</span></code></a> of the object. The name is not evaluated, while the value is; thus, a bare name token should be used for the name, while an expression can be used for the value: <code class="docutils literal notranslate"><span class="pre">(object</span> <span class="pre">(x</span> <span class="pre">(mul</span> <span class="pre">6</span> <span class="pre">7)))</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<code class="descname">has-property?</code></dt>
+<dd><ul class="simple">
+<li>Macro</li>
+<li>First argument: <a class="reference internal" href="builtin-types.html#c.Object" title="Object"><code class="xref c c-type docutils literal notranslate"><span class="pre">Object</span></code></a></li>
+<li>Second argument: <a class="reference internal" href="builtin-types.html#c.String" title="String"><code class="xref c c-type docutils literal notranslate"><span class="pre">String</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.Bool" title="Bool"><code class="xref c c-type docutils literal notranslate"><span class="pre">Bool</span></code></a></li>
+</ul>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if the first argument has the property named by the second argument. The second argument is not evaluated; thus, a bare name token should be used: <code class="docutils literal notranslate"><span class="pre">(has-property?</span> <span class="pre">(object</span> <span class="pre">(x</span> <span class="pre">(mul</span> <span class="pre">6</span> <span class="pre">7)))</span> <span class="pre">y)</span></code> → <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<code class="descname">get-property</code></dt>
+<dd><ul class="simple">
+<li>Macro</li>
+<li>First argument: <a class="reference internal" href="builtin-types.html#c.Object" title="Object"><code class="xref c c-type docutils literal notranslate"><span class="pre">Object</span></code></a></li>
+<li>Second argument: <a class="reference internal" href="builtin-types.html#c.String" title="String"><code class="xref c c-type docutils literal notranslate"><span class="pre">String</span></code></a></li>
+<li><em>(Optional)</em> Third argument: any type</li>
+<li>Returns: any type</li>
+<li>Errors if: the object does not have that property and no default is provided</li>
+</ul>
+<p>Looks up the property named by the second argument in the first argument and returns its value. If the object does not have the specified property but the optional third argument is supplied, returns the third argument; if no third argument is given, a missing property results in an error. The second argument is not evaluated, but the other two are.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="copy">
+<code class="descname">copy</code><a class="headerlink" href="#copy" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
+<li>Macro</li>
+<li>Takes one or more arguments</li>
+<li>First argument: any type</li>
+<li>Each remaining argument: two-item <a class="reference internal" href="builtin-types.html#c.List" title="List"><code class="xref c c-type docutils literal notranslate"><span class="pre">List</span></code></a></li>
+<li>Returns: <a class="reference internal" href="builtin-types.html#c.Object" title="Object"><code class="xref c c-type docutils literal notranslate"><span class="pre">Object</span></code></a></li>
+<li>Warns if: more than one argument is given but the first argument is not an <a class="reference internal" href="builtin-types.html#c.Object" title="Object"><code class="xref c c-type docutils literal notranslate"><span class="pre">Object</span></code></a></li>
+</ul>
+<p>Returns a copy of the first argument. If the first argument is an <a class="reference internal" href="builtin-types.html#c.Object" title="Object"><code class="xref c c-type docutils literal notranslate"><span class="pre">Object</span></code></a>, name-value pairs may be given as additional arguments, using the same syntax as in <a class="reference internal" href="#object" title="object"><code class="xref py py-data docutils literal notranslate"><span class="pre">object</span></code></a>; these properties are set in the new object, overwriting any properties of the same names from the original.</p>
+</dd></dl>
 
 </div>
 <div class="section" id="other">
@@ -266,8 +370,8 @@
 <li><a class="reference internal" href="#arithmetic">Arithmetic</a></li>
 <li><a class="reference internal" href="#lists">Lists</a></li>
 <li><a class="reference internal" href="#strings">Strings</a></li>
-<li><a class="reference internal" href="#objects">Objects</a></li>
 <li><a class="reference internal" href="#booleans-and-conditionals">Booleans and conditionals</a></li>
+<li><a class="reference internal" href="#objects">Objects</a></li>
 <li><a class="reference internal" href="#other">Other</a></li>
 <li><a class="reference internal" href="#repl-only">REPL only</a></li>
 </ul>

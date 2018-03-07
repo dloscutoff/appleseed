@@ -22,7 +22,7 @@ Appleseed has six data types built in: :c:type:`Int`, :c:type:`Bool`, :c:type:`L
    
 .. c:type:: Object
 
-   Type for objects, sets of name-value pairs. In boolean contexts,  ``{}`` (an object with no properties) is treated like ``false`` and all non-empty objects like ``true``. Example: ``{(type Fraction) (numerator 3) (denominator 4)}``
+   Type for objects, which are sets of name-value pairs. In boolean contexts, ``{}`` (an object with no properties) is treated like ``false`` and all non-empty objects like ``true``. Example: ``{(type Fraction) (numerator 3) (denominator 4)}``
 
 .. c:type:: Builtin
 
