@@ -28,5 +28,5 @@
   (lambda (obj some-type)
     (and
       (type? obj Object)
-      (has-property obj type)
+      (has-property? obj type)
       (equal? (get-property obj type) some-type))))

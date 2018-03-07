@@ -36,7 +36,7 @@ builtins = {"asl_cons": "cons",
             "asl_if": "if",
             "asl_quote": "q",
             "asl_object": "object",
-            "asl_has_property": "has-property",
+            "asl_has_property": "has-property?",
             "asl_get_property": "get-property",
             "asl_copy": "copy",
             "asl_load": "load",
@@ -779,7 +779,7 @@ Names that aren't in bindings are left untouched.
             cfg.error("argument of str must be list of Ints, not",
                       self.asl_type(value),
                       "\nDid you mean to use repr instead?")
-            return builtins[value.name]
+            return nil
 
     @function
     @params(1)
@@ -859,10 +859,7 @@ Names that aren't in bindings are left untouched.
         obj = resolve_thunks(self.asl_eval(obj))
         if isinstance(obj, dict):
             # TBD: error if prop_name is a list or something?
-            if prop_name in obj:
-                return 1
-            else:
-                return 0
+            return prop_name in obj
         else:
             cfg.error(self.asl_type(obj), "does not have properties")
             return nil
