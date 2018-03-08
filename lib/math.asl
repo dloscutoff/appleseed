@@ -224,13 +224,15 @@
         false
         (_prime? num 2)))))
 
+; Primality-check helper function
+; Runs trial division of all factors from 2 up through square root of <num>
 (def _prime?
   (lambda (num factor)
-    (if (less? factor num)
+    (if (less? num (mul factor factor))
+      true
       (if (divides? factor num)
         false
-        (_prime? num (inc factor)))
-      true)))
+        (_prime? num (inc factor))))))
 
 ; Called without arguments, returns an infinite list of the prime numbers
 ; using the Sieve of Eratosthenes
