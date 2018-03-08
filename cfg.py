@@ -32,6 +32,14 @@ def warn(*args):
     print("Warning:", *args, file=sys.stderr)
 
 
+def interrupted_error():
+    error("calculation interrupted by user.")
+
+
+def recursion_error():
+    error("recursion depth exceeded. How could you forget to use tail calls?!")
+
+
 # Exception that is raised by the (quit) macro
 
 class UserQuit(BaseException):

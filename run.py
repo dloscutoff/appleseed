@@ -29,23 +29,19 @@ def run_program(code, environment=None):
         environment = Program(repl=False)
     try:
         environment.execute(code)
-    except cfg.UserQuit:
-        # Encountered (quit) in one of the files
-        return
+        # If code execution was successful, begin event loop
+        builtin_events.event_loop(environment)
     except KeyboardInterrupt:
-        cfg.error("calculation interrupted by user.")
+        cfg.interrupted_error()
         return
     except RecursionError:
-        cfg.error("recursion depth exceeded.",
-                  "How could you forget to use tail calls?!")
+        cfg.recursion_error()
         return
     except Exception as err:
         # Miscellaneous exception, probably indicates a bug in
         # the interpreter
         cfg.error(err)
         return
-    # If code execution was successful, begin event loop
-    builtin_events.event_loop(environment)
 
 
 def repl(environment=None):
@@ -59,10 +55,9 @@ def repl(environment=None):
             last_value = environment.execute(instruction)
             environment.global_names["_"] = last_value
         except KeyboardInterrupt:
-            cfg.error("calculation interrupted by user.")
+            cfg.interrupted_error()
         except RecursionError:
-            cfg.error("recursion depth exceeded.",
-                      "How could you forget to use tail calls?!")
+            cfg.recursion_error()
         except cfg.UserQuit:
             break
         except Exception as err:
